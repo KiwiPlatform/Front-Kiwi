@@ -1,0 +1,16 @@
+.dashboardLayout {
+  display: flex;
+}
+
+.contentArea {
+  margin-left: 20vw; /* Same as navbar width */
+  padding: 40px;
+  width: 80vw; /* Remaining width */
+  box-sizing: border-box;
+}
+
+.contentArea h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+} 

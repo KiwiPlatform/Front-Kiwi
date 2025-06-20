@@ -1,0 +1,110 @@
+.tableContainer {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.workflowContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.workflowBadges {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.workflowBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+}
+
+.workflowBadge:nth-child(1) { background-color: #007bff; }
+.workflowBadge:nth-child(2) { background-color: #ffc107; color: #333; }
+.workflowBadge:nth-child(3) { background-color: #28a745; }
+.workflowBadge:nth-child(4) { background-color: #17a2b8; }
+.workflowBadge:nth-child(5) { background-color: #6c757d; }
+.workflowBadge:nth-child(6) { background-color: #343a40; }
+.workflowBadge:nth-child(7) { background-color: #0069d9; }
+.workflowBadge:nth-child(8) { background-color: #dc3545; }
+
+
+.badgeNumber {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 8px;
+  font-size: 0.7rem;
+}
+
+.tableControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.showEntries, .searchTable {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.showEntries select, .searchTable input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+thead tr {
+  background-color: #f7941e;
+  color: white;
+}
+
+th {
+  font-weight: bold;
+}
+
+tbody tr:nth-of-type(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+} 

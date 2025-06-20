@@ -1,0 +1,87 @@
+.loginPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.loginContainer {
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.logo {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  /* Styling for a text-based logo, to be replaced by an image */
+  border-bottom: 4px solid #f7941e; /* Orange accent */
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.welcomeText {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 20px 0 5px;
+}
+
+.systemName {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.inputGroup {
+  margin-bottom: 15px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Important for padding and width */
+  font-size: 1rem;
+}
+
+.button {
+  width: 100%;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 4px;
+  background-color: #f7941e; /* Orange color from image */
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #e6830d;
+}
+
+.error {
+  color: red;
+  margin-bottom: 15px;
+}
+
+.footer {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: #999;
+} 
