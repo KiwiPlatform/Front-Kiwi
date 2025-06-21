@@ -59,6 +59,30 @@
   box-shadow: 0 8px 25px rgba(56, 242, 171, 0.3);
 }
 
+.errorMessage {
+  background: linear-gradient(135deg, rgba(255, 71, 87, 0.1), rgba(255, 71, 87, 0.05));
+  border: 2px solid #ff4757;
+  color: #ff4757;
+  padding: 16px 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  font-weight: 600;
+  text-align: center;
+  animation: slideInDown 0.3s ease-out;
+}
+
+.successMessage {
+  background: linear-gradient(135deg, rgba(56, 242, 171, 0.1), rgba(167, 251, 57, 0.05));
+  border: 2px solid var(--accent-green);
+  color: var(--primary-dark);
+  padding: 16px 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  font-weight: 600;
+  text-align: center;
+  animation: slideInDown 0.3s ease-out;
+}
+
 .formContainer {
   background: var(--white);
   padding: 32px;

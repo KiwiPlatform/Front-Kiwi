@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getLeadById } from '../services/leadService';
+import { getLeadById, updateLead } from '../services/leadService';
 import type { Lead } from '../types/Lead';
 import styles from './LeadEditPage.module.css';
 import { ArrowLeftIcon, SaveIcon } from '../components/Icons';
@@ -10,6 +10,9 @@ const LeadEditPage = () => {
   const navigate = useNavigate();
   const [lead, setLead] = useState<Lead | null>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     if (leadId) {
@@ -36,6 +39,51 @@ const LeadEditPage = () => {
     const { name, value } = e.target;
     setLead(prevLead => (prevLead ? { ...prevLead, [name]: value } : null));
   };
+
+  const handleSave = async () => {
+    if (!lead || !leadId) return;
+
+    setSaving(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      // Validar campos requeridos (los que tienen asterisco en la interfaz)
+      const requiredFields = ['dni', 'cliente', 'telefono', 'correo', 'especialidad', 'costo'];
+      const missingFields = requiredFields.filter(field => {
+        const value = lead[field as keyof Lead];
+        return !value || String(value).trim() === '';
+      });
+      
+      if (missingFields.length > 0) {
+        const fieldNames = {
+          dni: 'DNI',
+          cliente: 'Cliente',
+          telefono: 'Teléfono',
+          correo: 'Correo Electrónico',
+          especialidad: 'Especialidad',
+          costo: 'Costo'
+        };
+        const missingFieldNames = missingFields.map(field => fieldNames[field as keyof typeof fieldNames]);
+        setError(`Por favor complete los campos requeridos: ${missingFieldNames.join(', ')}`);
+        return;
+      }
+
+      await updateLead(parseInt(leadId, 10), lead);
+      setSuccess(true);
+      
+      // Mostrar mensaje de éxito por 2 segundos antes de redirigir
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error updating lead:', error);
+      setError('Error al guardar los cambios. Por favor, intente nuevamente.');
+    } finally {
+      setSaving(false);
+    }
+  };
   
   if (loading) return <div className={styles.centered}>Cargando...</div>;
   if (!lead) return <div className={styles.centered}>Paciente no encontrado.</div>;
@@ -49,6 +97,19 @@ const LeadEditPage = () => {
           Retornar
         </button>
       </header>
+      
+      {/* Mensajes de estado */}
+      {error && (
+        <div className={styles.errorMessage}>
+          {error}
+        </div>
+      )}
+      
+      {success && (
+        <div className={styles.successMessage}>
+          ¡Paciente actualizado exitosamente! Redirigiendo...
+        </div>
+      )}
       
       <div className={styles.formContainer}>
         <section>
@@ -75,25 +136,54 @@ const LeadEditPage = () => {
             {/* Fila 1 */}
             <div className={styles.formGroup}>
               <label>DNI *</label>
-              <input name="dni" value={lead.dni} onChange={handleChange} placeholder="Ingrese DNI" />
+              <input 
+                name="dni" 
+                value={lead.dni} 
+                onChange={handleChange} 
+                placeholder="Ingrese DNI"
+                disabled={saving}
+              />
             </div>
             <div className={styles.formGroup}>
               <label>Cliente *</label>
-              <input name="cliente" value={lead.cliente} onChange={handleChange} placeholder="Nombre completo" />
+              <input 
+                name="cliente" 
+                value={lead.cliente} 
+                onChange={handleChange} 
+                placeholder="Nombre completo"
+                disabled={saving}
+              />
             </div>
             <div className={styles.formGroup}>
               <label>Teléfono *</label>
-              <input name="telefono" value={lead.telefono} onChange={handleChange} placeholder="Número de teléfono" />
+              <input 
+                name="telefono" 
+                value={lead.telefono} 
+                onChange={handleChange} 
+                placeholder="Número de teléfono"
+                disabled={saving}
+              />
             </div>
 
             {/* Fila 2 */}
             <div className={styles.formGroup}>
               <label>Correo Electrónico *</label>
-              <input name="correo" value={lead.correo} onChange={handleChange} placeholder="correo@ejemplo.com" />
+              <input 
+                name="correo" 
+                value={lead.correo} 
+                onChange={handleChange} 
+                placeholder="correo@ejemplo.com"
+                disabled={saving}
+              />
             </div>
             <div className={styles.formGroup}>
               <label>Especialidad *</label>
-              <select name="especialidad" value={lead.especialidad} onChange={handleChange}>
+              <select 
+                name="especialidad" 
+                value={lead.especialidad} 
+                onChange={handleChange}
+                disabled={saving}
+              >
                 <option value="Dermatología">Dermatología</option>
                 <option value="Cardiología">Cardiología</option>
                 <option value="Oftalmología">Oftalmología</option>
@@ -108,7 +198,13 @@ const LeadEditPage = () => {
             </div>
             <div className={styles.formGroup}>
               <label>Costo *</label>
-              <input name="costo" value={lead.costo} onChange={handleChange} placeholder="S/. 0.00" />
+              <input 
+                name="costo" 
+                value={lead.costo} 
+                onChange={handleChange} 
+                placeholder="S/. 0.00"
+                disabled={saving}
+              />
             </div>
           </div>
         </section>
@@ -116,18 +212,31 @@ const LeadEditPage = () => {
         <section>
           <div className={styles.formGroup}>
             <label>Observaciones</label>
-            <textarea rows={4} defaultValue="Paciente registrado en el sistema médico" placeholder="Ingrese observaciones adicionales..."></textarea>
+            <textarea 
+              rows={4} 
+              defaultValue="Paciente registrado en el sistema médico" 
+              placeholder="Ingrese observaciones adicionales..."
+              disabled={saving}
+            ></textarea>
           </div>
         </section>
 
       </div>
 
       <footer className={styles.pageFooter}>
-        <button className={styles.saveButton}>
+        <button 
+          onClick={handleSave} 
+          className={styles.saveButton}
+          disabled={saving}
+        >
           <SaveIcon size={16} color="currentColor" />
-          Grabar
+          {saving ? 'Guardando...' : 'Grabar'}
         </button>
-        <button onClick={() => navigate("/dashboard")} className={styles.returnButton}>
+        <button 
+          onClick={() => navigate("/dashboard")} 
+          className={styles.returnButton}
+          disabled={saving}
+        >
           <ArrowLeftIcon size={16} color="currentColor" />
           Retornar
         </button>
