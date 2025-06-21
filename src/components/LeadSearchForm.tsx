@@ -1,4 +1,5 @@
 import styles from './LeadSearchForm.module.css';
+import { SearchIcon, ExportIcon } from './Icons';
 
 const LeadSearchForm = () => {
   return (
@@ -8,11 +9,11 @@ const LeadSearchForm = () => {
         {/* Row 1 */}
         <div className={styles.formGroup}>
           <label htmlFor="dni">DNI</label>
-          <input type="text" id="dni" />
+          <input type="text" id="dni" placeholder="Ingrese DNI" />
         </div>
         <div className={styles.formGroup}>
           <label htmlFor="cliente">Cliente</label>
-          <input type="text" id="cliente" />
+          <input type="text" id="cliente" placeholder="Nombre del cliente" />
         </div>
         <div className={styles.formGroup}>
           <label htmlFor="clinica">Clínica</label>
@@ -62,19 +63,19 @@ const LeadSearchForm = () => {
         {/* Row 2 */}
         <div className={styles.formGroup}>
           <label htmlFor="telefono">Teléfono</label>
-          <input type="text" id="telefono" />
+          <input type="text" id="telefono" placeholder="Número de teléfono" />
         </div>
         <div className={styles.formGroup}>
           <label htmlFor="correo">Correo</label>
-          <input type="email" id="correo" />
+          <input type="email" id="correo" placeholder="Correo electrónico" />
         </div>
         <div className={styles.formGroup}>
           <label htmlFor="costo_min">Costo Mínimo</label>
-          <input type="number" id="costo_min" />
+          <input type="number" id="costo_min" placeholder="S/. 0" />
         </div>
         <div className={styles.formGroup}>
           <label htmlFor="costo_max">Costo Máximo</label>
-          <input type="number" id="costo_max" />
+          <input type="number" id="costo_max" placeholder="S/. 10000" />
         </div>
         <div className={styles.formGroup}>
           <label htmlFor="ingreso">Año de Ingreso</label>
@@ -108,8 +109,14 @@ const LeadSearchForm = () => {
 
       </form>
       <div className={styles.buttonContainer}>
-          <button className={`${styles.button} ${styles.searchButton}`}>Búsqueda</button>
-          <button className={`${styles.button} ${styles.exportButton}`}>Exportar</button>
+          <button className={`${styles.button} ${styles.searchButton}`}>
+            <SearchIcon size={16} color="currentColor" />
+            Búsqueda
+          </button>
+          <button className={`${styles.button} ${styles.exportButton}`}>
+            <ExportIcon size={16} color="currentColor" />
+            Exportar
+          </button>
       </div>
     </div>
   );

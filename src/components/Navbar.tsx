@@ -1,6 +1,7 @@
 import { useNavigate, NavLink } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import authService from '../services/authService';
+import { UserIcon, LogoutIcon, LogoKiwi } from './Icons';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -15,16 +16,17 @@ const Navbar = () => {
   return (
     <div className={styles.navbar}>
       <div className={styles.logo}>
-        KIWI
+        <LogoKiwi width={120} height={32} color="#ffffff" />
       </div>
       <div className={styles.profile}>
+        <UserIcon size={16} color="currentColor" />
         {userName}
       </div>
       <nav className={styles.navLinks}>
         <ul>
           <li>
             <NavLink to="/dashboard" className={({ isActive }) => isActive ? styles.active : ''}>
-              Listado de leads
+              Listado de pacientes
             </NavLink>
           </li>
           <li>
@@ -41,6 +43,7 @@ const Navbar = () => {
       </nav>
       <div className={styles.logoutSection}>
         <button onClick={handleLogout} className={styles.logoutButton}>
+          <LogoutIcon size={16} color="currentColor" />
           Cerrar sesión
         </button>
       </div>

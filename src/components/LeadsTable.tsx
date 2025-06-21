@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './LeadsTable.module.css';
 import { getLeads } from '../services/leadService';
 import type { Lead } from '../types/Lead';
+import { EditIcon } from './Icons';
 
 const LeadsTable = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -38,7 +39,7 @@ const LeadsTable = () => {
         </div>
         <div className={styles.searchTable}>
           <label htmlFor="table-search">Buscar:</label>
-          <input type="text" id="table-search" />
+          <input type="text" id="table-search" placeholder="Buscar pacientes..." />
         </div>
       </div>
 
@@ -60,7 +61,7 @@ const LeadsTable = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={10}>Cargando...</td></tr>
+              <tr><td colSpan={10} style={{textAlign: 'center', padding: '40px'}}>Cargando...</td></tr>
             ) : (
               leads.map(lead => (
                 <tr key={lead.id}>
@@ -68,8 +69,9 @@ const LeadsTable = () => {
                     <button 
                       onClick={() => navigate(`/dashboard/edit/${lead.id}`)} 
                       className={styles.editButton}
+                      title="Editar paciente"
                     >
-                      📝
+                      <EditIcon size={16} color="currentColor" />
                     </button>
                   </td>
                   <td>{lead.cliente}</td>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LoginPage.module.css';
 import authService from '../services/authService';
+import { LogoKiwi } from '../components/Icons';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -35,29 +36,34 @@ const LoginPage = () => {
     <div className={styles.loginPage}>
       <div className={styles.loginContainer}>
         <div className={styles.logo}>
-          {/* Placeholder for the logo */}
-          AUTOPLAN
+          <LogoKiwi width={180} height={48} color="#38F2AB" />
         </div>
         <p className={styles.welcomeText}>Bienvenido</p>
-        <p className={styles.systemName}>SGL - Sistema de gestion de leads</p>
+        <p className={styles.systemName}>Sistema de Gestión de Pacientes</p>
         <h2>Inicie sesión</h2>
         <form onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
+            <label htmlFor="username">Usuario</label>
             <input
+              id="username"
               type="text"
-              placeholder="Usuario"
+              placeholder="Ingrese su usuario"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className={styles.input}
+              disabled={loading}
             />
           </div>
           <div className={styles.inputGroup}>
+            <label htmlFor="password">Contraseña</label>
             <input
+              id="password"
               type="password"
-              placeholder="Contraseña"
+              placeholder="Ingrese su contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={styles.input}
+              disabled={loading}
             />
           </div>
           {error && <p className={styles.error}>{error}</p>}
@@ -66,7 +72,7 @@ const LoginPage = () => {
           </button>
         </form>
         <footer className={styles.footer}>
-          Autoplan ® Todos los derechos reservados - 2021
+          KIWI ® Todos los derechos reservados - 2024
         </footer>
       </div>
     </div>

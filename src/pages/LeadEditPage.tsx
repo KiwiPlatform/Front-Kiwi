@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getLeadById } from '../services/leadService';
 import type { Lead } from '../types/Lead';
 import styles from './LeadEditPage.module.css';
+import { ArrowLeftIcon, SaveIcon } from '../components/Icons';
 
 const LeadEditPage = () => {
   const { leadId } = useParams<{ leadId: string }>();
@@ -44,7 +45,8 @@ const LeadEditPage = () => {
       <header className={styles.pageHeader}>
         <h1>Paciente: {lead.cliente}</h1>
         <button onClick={() => navigate("/dashboard")} className={styles.returnButton}>
-          &larr; Retornar
+          <ArrowLeftIcon size={16} color="currentColor" />
+          Retornar
         </button>
       </header>
       
@@ -73,21 +75,21 @@ const LeadEditPage = () => {
             {/* Fila 1 */}
             <div className={styles.formGroup}>
               <label>DNI *</label>
-              <input name="dni" value={lead.dni} onChange={handleChange} />
+              <input name="dni" value={lead.dni} onChange={handleChange} placeholder="Ingrese DNI" />
             </div>
             <div className={styles.formGroup}>
               <label>Cliente *</label>
-              <input name="cliente" value={lead.cliente} onChange={handleChange} />
+              <input name="cliente" value={lead.cliente} onChange={handleChange} placeholder="Nombre completo" />
             </div>
             <div className={styles.formGroup}>
               <label>Teléfono *</label>
-              <input name="telefono" value={lead.telefono} onChange={handleChange} />
+              <input name="telefono" value={lead.telefono} onChange={handleChange} placeholder="Número de teléfono" />
             </div>
 
             {/* Fila 2 */}
             <div className={styles.formGroup}>
               <label>Correo Electrónico *</label>
-              <input name="correo" value={lead.correo} onChange={handleChange} />
+              <input name="correo" value={lead.correo} onChange={handleChange} placeholder="correo@ejemplo.com" />
             </div>
             <div className={styles.formGroup}>
               <label>Especialidad *</label>
@@ -106,7 +108,7 @@ const LeadEditPage = () => {
             </div>
             <div className={styles.formGroup}>
               <label>Costo *</label>
-              <input name="costo" value={lead.costo} onChange={handleChange} />
+              <input name="costo" value={lead.costo} onChange={handleChange} placeholder="S/. 0.00" />
             </div>
           </div>
         </section>
@@ -114,16 +116,20 @@ const LeadEditPage = () => {
         <section>
           <div className={styles.formGroup}>
             <label>Observaciones</label>
-            <textarea rows={4} defaultValue="Paciente registrado en el sistema médico"></textarea>
+            <textarea rows={4} defaultValue="Paciente registrado en el sistema médico" placeholder="Ingrese observaciones adicionales..."></textarea>
           </div>
         </section>
 
       </div>
 
       <footer className={styles.pageFooter}>
-        <button className={styles.saveButton}>Grabar</button>
+        <button className={styles.saveButton}>
+          <SaveIcon size={16} color="currentColor" />
+          Grabar
+        </button>
         <button onClick={() => navigate("/dashboard")} className={styles.returnButton}>
-          &larr; Retornar
+          <ArrowLeftIcon size={16} color="currentColor" />
+          Retornar
         </button>
       </footer>
     </div>

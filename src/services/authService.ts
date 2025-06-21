@@ -1,49 +1,56 @@
-// import axios from 'axios';
+import apiClient from './apiClient';
+import { isUsingMocks, devLog } from '../config/environment';
 
 // const API_URL = 'http://your-api-url.com/api'; // This is now just a placeholder
 
 const login = async (username: string, password: string) => {
+  devLog('Attempting login with:', { username, password });
 
-    /*try {
-        const response = await axios.post(`${API_URL}/api/v1/auth/login`, {
-          username,
-          password,
-        });
-        // Assuming the server returns a token
-        if (response.data.token) {
-          localStorage.setItem('user', JSON.stringify(response.data));
+  if (isUsingMocks()) {
+    // Mock login logic
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (username === 'miriam' && password === 'password') {
+          const mockUser = {
+            user: {
+              name: 'Miriam',
+              first_surname: 'Bautista',
+              email: 'moyola@autoplan.com.pe',
+            },
+            token: 'fake-jwt-token',
+          };
+          localStorage.setItem('user', JSON.stringify(mockUser));
+          devLog('Mock login successful');
+          resolve(mockUser);
+        } else {
+          devLog('Mock login failed: Invalid credentials');
+          reject(new Error('Invalid credentials'));
         }
-        return response.data;
-      } catch (error) {
-        // Handle error (e.g., show a notification to the user)
-        console.error('Login failed:', error);
-        throw error;
-      }*/
-
-  console.log('Attempting login with:', { username, password });
-  // Mock login logic
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (username === 'miriam' && password === 'password') {
-        const mockUser = {
-          user: {
-            name: 'Miriam',
-            first_surname: 'Bautista',
-            email: 'moyola@autoplan.com.pe',
-          },
-          token: 'fake-jwt-token',
-        };
-        localStorage.setItem('user', JSON.stringify(mockUser));
-        resolve(mockUser);
-      } else {
-        reject(new Error('Invalid credentials'));
+      }, 1000); // 1-second delay to simulate network request
+    });
+  } else {
+    // Real API call
+    try {
+      const response = await apiClient.post('/auth/login', {
+        username,
+        password,
+      });
+      
+      if (response.data.token) {
+        localStorage.setItem('user', JSON.stringify(response.data));
+        devLog('Real API login successful');
       }
-    }, 1000); // 1-second delay to simulate network request
-  });
+      return response.data;
+    } catch (error) {
+      devLog('Real API login failed:', error);
+      throw error;
+    }
+  }
 };
 
 const logout = () => {
   localStorage.removeItem('user');
+  devLog('User logged out');
 };
 
 const getCurrentUser = () => {
