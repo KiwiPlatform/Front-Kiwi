@@ -50,13 +50,16 @@ interface UpdateLeadRequest {
 const adaptBackendToFrontend = (backendLead: BackendLead): Lead => {
   // Extraer información temporal del createdAt
   let yearOfRegistration = 'N/A';
+  let fechaCompleta = 'N/A';
+
   if (backendLead.createdAt) {
     try {
       const date = new Date(backendLead.createdAt);
       const now = new Date();
       const diffTime = Math.abs(now.getTime() - date.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
+      // Tiempo relativo para la tabla
       if (diffDays === 0) {
         yearOfRegistration = 'Hoy';
       } else if (diffDays === 1) {
@@ -73,6 +76,15 @@ const adaptBackendToFrontend = (backendLead: BackendLead): Lead => {
         const years = Math.floor(diffDays / 365);
         yearOfRegistration = `Hace ${years} ${years === 1 ? 'año' : 'años'}`;
       }
+
+      // Fecha completa para la página de edición (formato DD/MM/YY HH:MM)
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString().slice(-2);
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      fechaCompleta = `${day}/${month}/${year} ${hours}:${minutes}`;
+
     } catch (error) {
       console.error('Error parsing createdAt date:', error);
     }
@@ -88,7 +100,9 @@ const adaptBackendToFrontend = (backendLead: BackendLead): Lead => {
     especialidad: backendLead.medicalSpecialtyName,
     ingreso: yearOfRegistration,  // Ahora muestra tiempo relativo
     recepcionista: backendLead.receptionistName || 'N/A',  // receptionistName no viene en LeadResponse
-    telefono: backendLead.phone
+    telefono: backendLead.phone,
+    fechaRegistro: fechaCompleta,  // Fecha completa para edición
+    origen: backendLead.origin || 'WEB'  // Origen del lead
   };
 
   apiLog('SUCCESS', 'Backend lead adapted to frontend format', {
@@ -96,7 +110,9 @@ const adaptBackendToFrontend = (backendLead: BackendLead): Lead => {
     frontendId: adapted.id,
     clientName: adapted.cliente,
     clinicName: adapted.clinica,
-    yearOfRegistration: yearOfRegistration
+    yearOfRegistration: yearOfRegistration,
+    fechaRegistro: fechaCompleta,
+    origen: adapted.origen
   });
 
   return adapted;

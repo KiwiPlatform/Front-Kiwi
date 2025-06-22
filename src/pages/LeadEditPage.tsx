@@ -21,17 +21,7 @@ const LeadEditPage = () => {
         try {
           const data = await getLeadById(parseInt(leadId, 10));
           if (data) {
-            // Formatear la fecha de registro para mostrar fecha y hora completa
-            if (data.ingreso && data.ingreso !== 'N/A') {
-              // Para la vista de edición, mostrar la fecha completa en lugar del tiempo relativo
-              const leadDetail = await getLeadById(parseInt(leadId, 10));
-              setLead({
-                ...data,
-                ingreso: data.ingreso // Por ahora mantenemos el tiempo relativo
-              });
-            } else {
-              setLead(data);
-            }
+            setLead(data);
           } else {
             console.error("Lead not found");
           }
@@ -135,7 +125,13 @@ const LeadEditPage = () => {
               </div>
               <div className={styles.formGroup}>
                 <label>Fecha de Registro</label>
-                <input type="text" value={lead.ingreso} readOnly />
+                <input type="text" value={lead.fechaRegistro || lead.ingreso} readOnly />
+              </div>
+            </div>
+            <div className={`${styles.formGrid} ${styles.gridCols3}`} style={{marginTop: '1rem'}}>
+              <div className={styles.formGroup}>
+                <label>Origen del Lead</label>
+                <input type="text" value={lead.origen || 'WEB'} readOnly />
               </div>
             </div>
           </section>

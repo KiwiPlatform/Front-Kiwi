@@ -9,4 +9,6 @@ export interface Lead {
   ingreso: string;
   recepcionista: string;
   telefono: string;
-} 
+  fechaRegistro?: string; // Fecha completa DD/MM/YY HH:MM
+  origen?: string; // Origen del lead (WEB, etc.)
+}
