@@ -247,4 +247,23 @@
     width: 100%;
     justify-content: center;
   }
+}
+
+.observacionStatusRow {
+  display: flex;
+  gap: 24px;
+  align-items: flex-end;
+}
+
+.observacionStatusRow .formGroup {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.statusSmallSelect {
+  width: 180px;
+  min-width: 120px;
+  max-width: 220px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
 } 

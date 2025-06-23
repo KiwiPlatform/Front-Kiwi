@@ -4,11 +4,14 @@ import styles from './LeadsTable.module.css';
 import { getLeads } from '../services/leadService';
 import type { Lead } from '../types/Lead';
 import { EditIcon } from './Icons';
+import { useLeadsContext } from '../context/LeadsContext';
+import { LeadStatusLabels, LeadStatus } from '../types/Lead';
 
 const LeadsTable = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { leadsVersion } = useLeadsContext();
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -23,7 +26,7 @@ const LeadsTable = () => {
     };
 
     fetchLeads();
-  }, []);
+  }, [leadsVersion]);
 
   return (
       <div className={styles.tableContainer}>
@@ -55,6 +58,7 @@ const LeadsTable = () => {
               <th>Teléfono</th>
               <th>Costo</th>
               <th>Ingreso</th>
+              <th>Status</th>
             </tr>
             </thead>
             <tbody>
@@ -79,6 +83,22 @@ const LeadsTable = () => {
                       <td>{lead.telefono}</td>
                       <td>S/. {lead.costo}</td>
                       <td>{lead.ingreso}</td>
+                      <td>
+                        <span className={
+                          `${styles.statusBadge} ` +
+                          (lead.status === LeadStatus.NUEVO ? styles.statusNuevo :
+                          lead.status === LeadStatus.CONTACTADO ? styles.statusContactado :
+                          lead.status === LeadStatus.EN_EVALUACION ? styles.statusEvaluacion :
+                          lead.status === LeadStatus.PRE_APROBADO ? styles.statusPreaprobado :
+                          lead.status === LeadStatus.APROBADO ? styles.statusAprobado :
+                          lead.status === LeadStatus.RECHAZADO ? styles.statusRechazado :
+                          lead.status === LeadStatus.DESEMBOLSADO ? styles.statusDesembolsado :
+                          styles.statusBadge)
+                        }
+                        >
+                          {LeadStatusLabels[lead.status]}
+                        </span>
+                      </td>
                     </tr>
                 ))
             )}

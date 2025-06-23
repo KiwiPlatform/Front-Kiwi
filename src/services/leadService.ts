@@ -1,6 +1,7 @@
 import apiClient from './apiClient';
 import type { Lead } from '../types/Lead';
 import { apiLog } from '../config/environment';
+import { LeadStatus } from '../types/Lead';
 
 // Interfaces del backend KiwiPay
 interface BackendLead {
@@ -16,10 +17,11 @@ interface BackendLead {
   clinicName: string;
   medicalSpecialtyId?: number;  // Solo viene en LeadDetailResponse
   medicalSpecialtyName: string;
-  status: string;
+  status: string; // Se mapeará al enum LeadStatus
   origin?: string;  // Solo viene en LeadDetailResponse
   createdAt: string;
   updatedAt?: string;  // Solo viene en LeadDetailResponse
+  observacion?: string; // Nuevo campo opcional
 }
 
 interface CreateLeadRequest {
@@ -32,6 +34,8 @@ interface CreateLeadRequest {
   treatmentCost: number;
   phone: string;
   email?: string;
+  status: string;
+  observacion?: string;
 }
 
 interface UpdateLeadRequest {
@@ -44,6 +48,8 @@ interface UpdateLeadRequest {
   treatmentCost?: number;
   phone?: string;
   email?: string;
+  status?: string;
+  observacion?: string;
 }
 
 // Adaptador para convertir entre el formato del backend y el formato del frontend
@@ -102,7 +108,9 @@ const adaptBackendToFrontend = (backendLead: BackendLead): Lead => {
     recepcionista: backendLead.receptionistName || 'N/A',  // receptionistName no viene en LeadResponse
     telefono: backendLead.phone,
     fechaRegistro: fechaCompleta,  // Fecha completa para edición
-    origen: backendLead.origin || 'WEB'  // Origen del lead
+    origen: backendLead.origin || 'WEB',  // Origen del lead
+    observacion: backendLead.observacion || '',
+    status: backendLead.status as LeadStatus
   };
 
   apiLog('SUCCESS', 'Backend lead adapted to frontend format', {
@@ -118,7 +126,7 @@ const adaptBackendToFrontend = (backendLead: BackendLead): Lead => {
   return adapted;
 };
 
-const adaptFrontendToBackend = (frontendLead: Partial<Lead>): Partial<CreateLeadRequest | UpdateLeadRequest> => {
+const adaptFrontendToBackend = (frontendLead: Partial<import('../types/Lead').Lead>): Partial<CreateLeadRequest | UpdateLeadRequest> => {
   const adapted: Partial<CreateLeadRequest | UpdateLeadRequest> = {
     receptionistName: frontendLead.recepcionista,
     clientName: frontendLead.cliente,
@@ -126,7 +134,9 @@ const adaptFrontendToBackend = (frontendLead: Partial<Lead>): Partial<CreateLead
     monthlyIncome: frontendLead.ingreso ? parseFloat(frontendLead.ingreso) : undefined,
     treatmentCost: frontendLead.costo ? parseFloat(frontendLead.costo) : undefined,
     phone: frontendLead.telefono,
-    email: frontendLead.correo || undefined
+    email: frontendLead.correo || undefined,
+    status: frontendLead.status as string,
+    observacion: frontendLead.observacion
   };
 
   apiLog('SUCCESS', 'Frontend lead adapted to backend format', {
@@ -160,11 +170,12 @@ export const getLeads = async (): Promise<Lead[]> => {
 
     return adaptedLeads;
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { response?: { status?: number; data?: unknown }; validationErrors?: unknown };
     apiLog('ERROR', 'Failed to fetch leads from KiwiPay backend', {
-      error: error.message,
-      status: error.response?.status,
-      data: error.response?.data
+      error: (error as Error).message,
+      status: err.response?.status,
+      data: err.response?.data
     });
     throw error;
   }
@@ -191,17 +202,18 @@ export const getLeadById = async (id: number): Promise<Lead | undefined> => {
 
     return adaptedLead;
 
-  } catch (error: any) {
-    if (error.response?.status === 404) {
+  } catch (error: unknown) {
+    const err = error as { response?: { status?: number; data?: unknown }; validationErrors?: unknown };
+    if (err.response?.status === 404) {
       apiLog('ERROR', 'Lead not found in KiwiPay backend', { id });
       return undefined;
     }
 
     apiLog('ERROR', 'Failed to fetch lead by ID from KiwiPay backend', {
       id,
-      error: error.message,
-      status: error.response?.status,
-      data: error.response?.data
+      error: (error as Error).message,
+      status: err.response?.status,
+      data: err.response?.data
     });
     throw error;
   }
@@ -229,7 +241,9 @@ export const createLead = async (lead: Omit<Lead, 'id'>): Promise<Lead> => {
       monthlyIncome: backendData.monthlyIncome || 0,
       treatmentCost: backendData.treatmentCost || 0,
       phone: backendData.phone || '',
-      email: backendData.email
+      email: backendData.email,
+      status: backendData.status,
+      observacion: backendData.observacion
     };
 
     const response = await apiClient.post<BackendLead>('/leads', createData);
@@ -249,12 +263,13 @@ export const createLead = async (lead: Omit<Lead, 'id'>): Promise<Lead> => {
 
     return adaptedLead;
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { response?: { status?: number; data?: unknown }; validationErrors?: unknown };
     apiLog('ERROR', 'Failed to create lead in KiwiPay backend', {
-      error: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-      validationErrors: error.validationErrors
+      error: (error as Error).message,
+      status: err.response?.status,
+      data: err.response?.data,
+      validationErrors: err.validationErrors
     });
     throw error;
   }
@@ -288,13 +303,14 @@ export const updateLead = async (id: number, lead: Partial<Lead>): Promise<Lead>
 
     return adaptedLead;
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { response?: { status?: number; data?: unknown }; validationErrors?: unknown };
     apiLog('ERROR', 'Failed to update lead in KiwiPay backend', {
       id,
-      error: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-      validationErrors: error.validationErrors
+      error: (error as Error).message,
+      status: err.response?.status,
+      data: err.response?.data,
+      validationErrors: err.validationErrors
     });
     throw error;
   }
@@ -308,12 +324,13 @@ export const deleteLead = async (id: number): Promise<void> => {
 
     apiLog('SUCCESS', 'Lead deleted successfully from KiwiPay backend', { id });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { response?: { status?: number; data?: unknown }; validationErrors?: unknown };
     apiLog('ERROR', 'Failed to delete lead from KiwiPay backend', {
       id,
-      error: error.message,
-      status: error.response?.status,
-      data: error.response?.data
+      error: (error as Error).message,
+      status: err.response?.status,
+      data: err.response?.data
     });
     throw error;
   }

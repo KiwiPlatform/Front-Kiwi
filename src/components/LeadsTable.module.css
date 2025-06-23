@@ -177,6 +177,35 @@ tbody tr:hover {
   color: var(--white);
 }
 
+.statusNuevo {
+  background: linear-gradient(135deg, #bdbdbd, #e0e0e0);
+  color: #333;
+}
+.statusContactado {
+  background: linear-gradient(135deg, #2196f3, #64b5f6);
+  color: #fff;
+}
+.statusEvaluacion {
+  background: linear-gradient(135deg, #ff9800, #ffc107);
+  color: #fff;
+}
+.statusPreaprobado {
+  background: linear-gradient(135deg, #00bcd4, #4dd0e1);
+  color: #fff;
+}
+.statusAprobado {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: #fff;
+}
+.statusRechazado {
+  background: linear-gradient(135deg, #f44336, #e57373);
+  color: #fff;
+}
+.statusDesembolsado {
+  background: linear-gradient(135deg, #8bc34a, #cddc39);
+  color: #333;
+}
+
 /* Responsive design */
 @media (max-width: 1024px) {
   .tableControls {

@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getLeadById, updateLead } from '../services/leadService';
 import type { Lead } from '../types/Lead';
+import { LeadStatus, LeadStatusLabels } from '../types/Lead';
 import styles from './LeadEditPage.module.css';
 import { ArrowLeftIcon, SaveIcon } from '../components/Icons';
+import { useLeadsContext } from '../context/LeadsContext';
 
 const LeadEditPage = () => {
   const { leadId } = useParams<{ leadId: string }>();
@@ -13,6 +15,7 @@ const LeadEditPage = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const { refreshLeads } = useLeadsContext();
 
   useEffect(() => {
     if (leadId) {
@@ -70,6 +73,7 @@ const LeadEditPage = () => {
       }
 
       await updateLead(parseInt(leadId, 10), lead);
+      refreshLeads();
       setSuccess(true);
 
       // Mostrar mensaje de éxito por 2 segundos antes de redirigir
@@ -216,14 +220,32 @@ const LeadEditPage = () => {
           </section>
 
           <section>
-            <div className={styles.formGroup}>
-              <label>Observaciones</label>
-              <textarea
-                  rows={4}
-                  defaultValue="Paciente registrado en el sistema médico"
-                  placeholder="Ingrese observaciones adicionales..."
-                  disabled={saving}
-              ></textarea>
+            <div className={styles.observacionStatusRow}>
+              <div className={styles.formGroup}>
+                <label>Observaciones</label>
+                <textarea
+                    name="observacion"
+                    rows={4}
+                    value={lead.observacion || ''}
+                    onChange={handleChange}
+                    placeholder="Ingrese observaciones adicionales..."
+                    disabled={saving}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Status *</label>
+                <select
+                    name="status"
+                    value={lead.status}
+                    onChange={handleChange}
+                    disabled={saving}
+                    className={styles.statusSmallSelect}
+                >
+                  {Object.values(LeadStatus).map((status) => (
+                    <option key={status} value={status}>{LeadStatusLabels[status]}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </section>
 
