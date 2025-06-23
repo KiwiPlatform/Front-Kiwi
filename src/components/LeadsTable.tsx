@@ -63,7 +63,7 @@ const LeadsTable = () => {
             </thead>
             <tbody>
             {loading ? (
-                <tr><td colSpan={8} style={{textAlign: 'center', padding: '40px'}}>Cargando...</td></tr>
+                <tr><td colSpan={9} style={{textAlign: 'center', padding: '40px'}}>Cargando...</td></tr>
             ) : (
                 leads.map(lead => (
                     <tr key={lead.id}>

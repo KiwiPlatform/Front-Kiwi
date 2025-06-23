@@ -2,26 +2,28 @@ import apiClient from './apiClient';
 import type { Lead } from '../types/Lead';
 import { apiLog } from '../config/environment';
 import { LeadStatus } from '../types/Lead';
+import { getSpecialtyName, getSpecialtyId } from '../config/specialties';
 
 // Interfaces del backend KiwiPay
 interface BackendLead {
   id: number;
-  receptionistName?: string;  // Solo viene en LeadDetailResponse
   clientName: string;
   dni: string;
-  phone: string;
-  email?: string;  // Solo viene en LeadDetailResponse
-  monthlyIncome?: number;  // Solo viene en LeadDetailResponse
-  treatmentCost: number;
-  clinicId?: number;  // Solo viene en LeadDetailResponse
   clinicName: string;
-  medicalSpecialtyId?: number;  // Solo viene en LeadDetailResponse
   medicalSpecialtyName: string;
-  status: string; // Se mapeará al enum LeadStatus
-  origin?: string;  // Solo viene en LeadDetailResponse
+  treatmentCost: number;
+  phone: string;
+  status: string;
   createdAt: string;
-  updatedAt?: string;  // Solo viene en LeadDetailResponse
-  observacion?: string; // Nuevo campo opcional
+  // Campos que solo vienen en LeadDetailResponse (GET /leads/{id})
+  receptionistName?: string;
+  email?: string;
+  monthlyIncome?: number;
+  clinicId?: number;
+  medicalSpecialtyId?: number;
+  origin?: string;
+  updatedAt?: string;
+  observacion?: string;
 }
 
 interface CreateLeadRequest {
@@ -35,6 +37,7 @@ interface CreateLeadRequest {
   phone: string;
   email?: string;
   status: string;
+  origin?: string;
   observacion?: string;
 }
 
@@ -49,6 +52,7 @@ interface UpdateLeadRequest {
   phone?: string;
   email?: string;
   status?: string;
+  origin?: string;
   observacion?: string;
 }
 
@@ -100,24 +104,36 @@ const adaptBackendToFrontend = (backendLead: BackendLead): Lead => {
     id: backendLead.id,
     cliente: backendLead.clientName,
     clinica: backendLead.clinicName,
-    correo: backendLead.email || 'N/A',  // El email no viene en LeadResponse
+    correo: backendLead.email || 'N/A',  // No viene en el listado, usar 'N/A'
     costo: backendLead.treatmentCost?.toString() || '0',
     dni: backendLead.dni,
-    especialidad: backendLead.medicalSpecialtyName,
+    especialidad: backendLead.medicalSpecialtyName || getSpecialtyName(backendLead.medicalSpecialtyId || 1),
     ingreso: yearOfRegistration,  // Ahora muestra tiempo relativo
-    recepcionista: backendLead.receptionistName || 'N/A',  // receptionistName no viene en LeadResponse
+    recepcionista: backendLead.receptionistName || 'N/A',  // No viene en el listado, usar 'N/A'
     telefono: backendLead.phone,
     fechaRegistro: fechaCompleta,  // Fecha completa para edición
-    origen: backendLead.origin || 'WEB',  // Origen del lead
+    origen: backendLead.origin || 'WEB',  // No viene en el listado, usar 'WEB' por defecto
     observacion: backendLead.observacion || '',
     status: backendLead.status as LeadStatus
   };
+
+  // Log de depuración para verificar el mapeo de especialidad
+  console.log('Adaptador Backend -> Frontend:', {
+    backendMedicalSpecialtyId: backendLead.medicalSpecialtyId,
+    backendMedicalSpecialtyName: backendLead.medicalSpecialtyName,
+    frontendEspecialidad: adapted.especialidad,
+    backendStatus: backendLead.status,
+    frontendStatus: adapted.status,
+    calculatedSpecialtyName: backendLead.medicalSpecialtyId ? getSpecialtyName(backendLead.medicalSpecialtyId) : 'N/A'
+  });
 
   apiLog('SUCCESS', 'Backend lead adapted to frontend format', {
     backendId: backendLead.id,
     frontendId: adapted.id,
     clientName: adapted.cliente,
     clinicName: adapted.clinica,
+    medicalSpecialtyName: backendLead.medicalSpecialtyName,
+    especialidad: adapted.especialidad,
     yearOfRegistration: yearOfRegistration,
     fechaRegistro: fechaCompleta,
     origen: adapted.origen
@@ -131,19 +147,55 @@ const adaptFrontendToBackend = (frontendLead: Partial<import('../types/Lead').Le
     receptionistName: frontendLead.recepcionista,
     clientName: frontendLead.cliente,
     dni: frontendLead.dni,
-    monthlyIncome: frontendLead.ingreso ? parseFloat(frontendLead.ingreso) : undefined,
     treatmentCost: frontendLead.costo ? parseFloat(frontendLead.costo) : undefined,
     phone: frontendLead.telefono,
-    email: frontendLead.correo || undefined,
+    email: frontendLead.correo,
     status: frontendLead.status as string,
-    observacion: frontendLead.observacion
+    observacion: frontendLead.observacion,
+    // Campos adicionales requeridos por el backend
+    clinicId: 1, // Valor por defecto, ya que no tenemos catálogo de clínicas
+    monthlyIncome: 0.01, // Valor por defecto, ya que no tenemos el ingreso real
+    origin: frontendLead.origen || 'WEB' // Valor por defecto
   };
+
+  // Siempre enviar medicalSpecialtyId en las actualizaciones
+  if (frontendLead.especialidad) {
+    // Lista de especialidades que sabemos que existen en el backend
+    const validSpecialties = ['Dermatología', 'Cardiología', 'Oftalmología'];
+    
+    if (validSpecialties.includes(frontendLead.especialidad)) {
+      const specialtyId = getSpecialtyId(frontendLead.especialidad);
+      adapted.medicalSpecialtyId = specialtyId;
+    } else {
+      // Si la especialidad no es válida, usar un valor por defecto válido
+      adapted.medicalSpecialtyId = 1; // Dermatología por defecto
+    }
+  } else {
+    // Si no se envía especialidad, usar un valor por defecto válido
+    adapted.medicalSpecialtyId = 1; // Dermatología por defecto
+  }
+
+  // Log de depuración para verificar el mapeo
+  console.log('Adaptador Frontend -> Backend:', {
+    frontendEspecialidad: frontendLead.especialidad,
+    frontendStatus: frontendLead.status,
+    backendStatus: adapted.status,
+    medicalSpecialtyId: adapted.medicalSpecialtyId,
+    clinicId: adapted.clinicId,
+    monthlyIncome: adapted.monthlyIncome,
+    origin: adapted.origin,
+    fullAdapted: adapted
+  });
 
   apiLog('SUCCESS', 'Frontend lead adapted to backend format', {
     clientName: adapted.clientName,
     dni: adapted.dni,
+    treatmentCost: adapted.treatmentCost,
+    especialidad: frontendLead.especialidad,
+    medicalSpecialtyId: adapted.medicalSpecialtyId,
+    clinicId: adapted.clinicId,
     monthlyIncome: adapted.monthlyIncome,
-    treatmentCost: adapted.treatmentCost
+    origin: adapted.origin
   });
 
   return adapted;
@@ -235,14 +287,15 @@ export const createLead = async (lead: Omit<Lead, 'id'>): Promise<Lead> => {
     const createData: CreateLeadRequest = {
       receptionistName: backendData.receptionistName || '',
       clientName: backendData.clientName || '',
-      clinicId: 1, // Valor por defecto, necesitarías obtenerlo del catálogo
-      medicalSpecialtyId: 1, // Valor por defecto, necesitarías obtenerlo del catálogo
+      clinicId: backendData.clinicId || 1, // Valor por defecto, necesitarías obtenerlo del catálogo
+      medicalSpecialtyId: backendData.medicalSpecialtyId || 1, // Valor por defecto, necesitarías obtenerlo del catálogo
       dni: backendData.dni || '',
-      monthlyIncome: backendData.monthlyIncome || 0,
-      treatmentCost: backendData.treatmentCost || 0,
+      monthlyIncome: backendData.monthlyIncome || 0.01, // Valor por defecto ya que no tenemos el ingreso real
+      treatmentCost: backendData.treatmentCost || 0.01,
       phone: backendData.phone || '',
       email: backendData.email,
-      status: backendData.status,
+      status: backendData.status || 'NUEVO',
+      origin: backendData.origin || 'WEB',
       observacion: backendData.observacion
     };
 
@@ -286,19 +339,58 @@ export const updateLead = async (id: number, lead: Partial<Lead>): Promise<Lead>
     // Adaptar los datos del frontend al formato del backend
     const backendData = adaptFrontendToBackend(lead) as UpdateLeadRequest;
 
+    // Log de depuración para ver qué se envía al backend
+    console.log('Datos enviados al backend:', {
+      id: id,
+      backendData: backendData,
+      originalLead: lead
+    });
+
+    // Log específico para la petición PUT
+    console.log('🚀 PUT Request Details:', {
+      url: `/leads/${id}`,
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer [TOKEN]'
+      },
+      body: JSON.stringify(backendData, null, 2)
+    });
+
     const response = await apiClient.put<BackendLead>(`/leads/${id}`, backendData);
+
+    // Log de depuración para ver qué devuelve el backend
+    console.log('Respuesta del backend después de actualizar:', {
+      responseData: response.data,
+      medicalSpecialtyId: response.data.medicalSpecialtyId,
+      medicalSpecialtyName: response.data.medicalSpecialtyName,
+      status: response.data.status,
+      fullResponse: response.data
+    });
 
     apiLog('SUCCESS', 'Lead updated successfully in KiwiPay backend', {
       id: response.data.id,
       clientName: response.data.clientName,
+      medicalSpecialtyName: response.data.medicalSpecialtyName,
+      medicalSpecialtyId: response.data.medicalSpecialtyId,
       updatedAt: response.data.updatedAt
     });
 
     const adaptedLead = adaptBackendToFrontend(response.data);
 
+    // Log de depuración para ver el lead adaptado
+    console.log('Lead adaptado después de actualizar:', {
+      adaptedLead: adaptedLead,
+      especialidad: adaptedLead.especialidad,
+      status: adaptedLead.status,
+      medicalSpecialtyName: response.data.medicalSpecialtyName,
+      medicalSpecialtyId: response.data.medicalSpecialtyId
+    });
+
     apiLog('SUCCESS', 'Updated lead adapted to frontend format', {
       id: adaptedLead.id,
-      cliente: adaptedLead.cliente
+      cliente: adaptedLead.cliente,
+      especialidad: adaptedLead.especialidad
     });
 
     return adaptedLead;

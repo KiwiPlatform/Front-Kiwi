@@ -40,6 +40,16 @@ const LeadEditPage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    
+    // Log de depuración para verificar cambios en los selectores
+    if (name === 'especialidad' || name === 'status') {
+      console.log('Cambio en selector:', {
+        name: name,
+        value: value,
+        previousValue: lead?.[name as keyof Lead]
+      });
+    }
+    
     setLead(prevLead => (prevLead ? { ...prevLead, [name]: value } : null));
   };
 
@@ -52,7 +62,7 @@ const LeadEditPage = () => {
 
     try {
       // Validar campos requeridos (los que tienen asterisco en la interfaz)
-      const requiredFields = ['dni', 'cliente', 'telefono', 'correo', 'especialidad', 'costo'];
+      const requiredFields = ['dni', 'cliente', 'telefono', 'especialidad', 'costo'];
       const missingFields = requiredFields.filter(field => {
         const value = lead[field as keyof Lead];
         return !value || String(value).trim() === '';
@@ -63,7 +73,6 @@ const LeadEditPage = () => {
           dni: 'DNI',
           cliente: 'Cliente',
           telefono: 'Teléfono',
-          correo: 'Correo Electrónico',
           especialidad: 'Especialidad',
           costo: 'Costo'
         };
@@ -71,6 +80,16 @@ const LeadEditPage = () => {
         setError(`Por favor complete los campos requeridos: ${missingFieldNames.join(', ')}`);
         return;
       }
+
+      // Log de depuración para ver qué datos se están enviando
+      console.log('Datos a enviar al backend:', {
+        id: leadId,
+        lead: lead,
+        especialidad: lead.especialidad,
+        status: lead.status,
+        especialidadOriginal: lead.especialidad,
+        cambios: Object.keys(lead)
+      });
 
       await updateLead(parseInt(leadId, 10), lead);
       refreshLeads();
@@ -117,30 +136,6 @@ const LeadEditPage = () => {
 
         <div className={styles.formContainer}>
           <section>
-            <h2 className={styles.sectionTitle}>Información del registro</h2>
-            <div className={`${styles.formGrid} ${styles.gridCols3}`}>
-              <div className={styles.formGroup}>
-                <label>Recepcionista</label>
-                <input type="text" value={lead.recepcionista} readOnly />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Clínica</label>
-                <input type="text" value={lead.clinica} readOnly />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Fecha de Registro</label>
-                <input type="text" value={lead.fechaRegistro || lead.ingreso} readOnly />
-              </div>
-            </div>
-            <div className={`${styles.formGrid} ${styles.gridCols3}`} style={{marginTop: '1rem'}}>
-              <div className={styles.formGroup}>
-                <label>Origen del Lead</label>
-                <input type="text" value={lead.origen || 'WEB'} readOnly />
-              </div>
-            </div>
-          </section>
-
-          <section>
             <h2 className={styles.sectionTitle}>Información del paciente</h2>
             <div className={`${styles.formGrid} ${styles.gridCols3}`}>
               {/* Fila 1 */}
@@ -177,16 +172,6 @@ const LeadEditPage = () => {
 
               {/* Fila 2 */}
               <div className={styles.formGroup}>
-                <label>Correo Electrónico *</label>
-                <input
-                    name="correo"
-                    value={lead.correo}
-                    onChange={handleChange}
-                    placeholder="correo@ejemplo.com"
-                    disabled={saving}
-                />
-              </div>
-              <div className={styles.formGroup}>
                 <label>Especialidad *</label>
                 <select
                     name="especialidad"
@@ -197,6 +182,7 @@ const LeadEditPage = () => {
                   <option value="Dermatología">Dermatología</option>
                   <option value="Cardiología">Cardiología</option>
                   <option value="Oftalmología">Oftalmología</option>
+                  {/* Comentamos las especialidades que no existen en el backend
                   <option value="Odontología">Odontología</option>
                   <option value="Ginecología">Ginecología</option>
                   <option value="Neurología">Neurología</option>
@@ -204,6 +190,7 @@ const LeadEditPage = () => {
                   <option value="Ortopedia">Ortopedia</option>
                   <option value="Pediatría">Pediatría</option>
                   <option value="Traumatología">Traumatología</option>
+                  */}
                 </select>
               </div>
               <div className={styles.formGroup}>
@@ -214,6 +201,21 @@ const LeadEditPage = () => {
                     onChange={handleChange}
                     placeholder="S/. 0.00"
                     disabled={saving}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Clínica</label>
+                <input type="text" value={lead.clinica} readOnly />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Correo Electrónico</label>
+                <input
+                    name="correo"
+                    value={lead.correo}
+                    onChange={handleChange}
+                    placeholder="correo@ejemplo.com"
+                    disabled={true}
+                    title="Este campo no se puede editar desde el listado"
                 />
               </div>
             </div>

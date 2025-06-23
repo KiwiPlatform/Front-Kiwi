@@ -36,6 +36,7 @@ const LeadSearchForm = () => {
             <option value="Dermatología">Dermatología</option>
             <option value="Cardiología">Cardiología</option>
             <option value="Oftalmología">Oftalmología</option>
+            {/* Comentamos las especialidades que no existen en el backend
             <option value="Odontología">Odontología</option>
             <option value="Ginecología">Ginecología</option>
             <option value="Neurología">Neurología</option>
@@ -43,20 +44,7 @@ const LeadSearchForm = () => {
             <option value="Ortopedia">Ortopedia</option>
             <option value="Pediatría">Pediatría</option>
             <option value="Traumatología">Traumatología</option>
-          </select>
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="recepcionista">Recepcionista</label>
-          <select id="recepcionista">
-            <option value="">Seleccione recepcionista</option>
-            <option value="Ana García">Ana García</option>
-            <option value="María López">María López</option>
-            <option value="Pedro Ruiz">Pedro Ruiz</option>
-            <option value="Carmen Vega">Carmen Vega</option>
-            <option value="Luis Morales">Luis Morales</option>
-            <option value="Sofia Castro">Sofia Castro</option>
-            <option value="Diego Ramos">Diego Ramos</option>
-            <option value="Elena Torres">Elena Torres</option>
+            */}
           </select>
         </div>
 
@@ -64,10 +52,6 @@ const LeadSearchForm = () => {
         <div className={styles.formGroup}>
           <label htmlFor="telefono">Teléfono</label>
           <input type="text" id="telefono" placeholder="Número de teléfono" />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="correo">Correo</label>
-          <input type="email" id="correo" placeholder="Correo electrónico" />
         </div>
         <div className={styles.formGroup}>
           <label htmlFor="costo_min">Costo Mínimo</label>
