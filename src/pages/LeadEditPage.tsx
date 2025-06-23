@@ -54,7 +54,7 @@ const LeadEditPage = () => {
         const value = lead[field as keyof Lead];
         return !value || String(value).trim() === '';
       });
-      
+
       if (missingFields.length > 0) {
         const fieldNames = {
           dni: 'DNI',
@@ -71,12 +71,12 @@ const LeadEditPage = () => {
 
       await updateLead(parseInt(leadId, 10), lead);
       setSuccess(true);
-      
+
       // Mostrar mensaje de éxito por 2 segundos antes de redirigir
       setTimeout(() => {
         navigate('/dashboard');
       }, 2000);
-      
+
     } catch (error) {
       console.error('Error updating lead:', error);
       setError('Error al guardar los cambios. Por favor, intente nuevamente.');
@@ -84,165 +84,171 @@ const LeadEditPage = () => {
       setSaving(false);
     }
   };
-  
+
   if (loading) return <div className={styles.centered}>Cargando...</div>;
   if (!lead) return <div className={styles.centered}>Paciente no encontrado.</div>;
 
   return (
-    <div className={styles.editPageContainer}>
-      <header className={styles.pageHeader}>
-        <h1>Paciente: {lead.cliente}</h1>
-        <button onClick={() => navigate("/dashboard")} className={styles.returnButton}>
-          <ArrowLeftIcon size={16} color="currentColor" />
-          Retornar
-        </button>
-      </header>
-      
-      {/* Mensajes de estado */}
-      {error && (
-        <div className={styles.errorMessage}>
-          {error}
-        </div>
-      )}
-      
-      {success && (
-        <div className={styles.successMessage}>
-          ¡Paciente actualizado exitosamente! Redirigiendo...
-        </div>
-      )}
-      
-      <div className={styles.formContainer}>
-        <section>
-          <h2 className={styles.sectionTitle}>Información del registro</h2>
-          <div className={`${styles.formGrid} ${styles.gridCols3}`}>
-            <div className={styles.formGroup}>
-              <label>Recepcionista</label>
-              <input type="text" value={lead.recepcionista} readOnly />
-            </div>
-            <div className={styles.formGroup}>
-              <label>Clínica</label>
-              <input type="text" value={lead.clinica} readOnly />
-            </div>
-            <div className={styles.formGroup}>
-              <label>Año de Ingreso</label>
-              <input type="text" value={lead.ingreso} readOnly />
-            </div>
-          </div>
-        </section>
+      <div className={styles.editPageContainer}>
+        <header className={styles.pageHeader}>
+          <h1>Paciente: {lead.cliente}</h1>
+          <button onClick={() => navigate("/dashboard")} className={styles.returnButton}>
+            <ArrowLeftIcon size={16} color="currentColor" />
+            Retornar
+          </button>
+        </header>
 
-        <section>
-          <h2 className={styles.sectionTitle}>Información del paciente</h2>
-          <div className={`${styles.formGrid} ${styles.gridCols3}`}>
-            {/* Fila 1 */}
-            <div className={styles.formGroup}>
-              <label>DNI *</label>
-              <input 
-                name="dni" 
-                value={lead.dni} 
-                onChange={handleChange} 
-                placeholder="Ingrese DNI"
-                disabled={saving}
-              />
+        {/* Mensajes de estado */}
+        {error && (
+            <div className={styles.errorMessage}>
+              {error}
             </div>
-            <div className={styles.formGroup}>
-              <label>Cliente *</label>
-              <input 
-                name="cliente" 
-                value={lead.cliente} 
-                onChange={handleChange} 
-                placeholder="Nombre completo"
-                disabled={saving}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label>Teléfono *</label>
-              <input 
-                name="telefono" 
-                value={lead.telefono} 
-                onChange={handleChange} 
-                placeholder="Número de teléfono"
-                disabled={saving}
-              />
-            </div>
+        )}
 
-            {/* Fila 2 */}
-            <div className={styles.formGroup}>
-              <label>Correo Electrónico *</label>
-              <input 
-                name="correo" 
-                value={lead.correo} 
-                onChange={handleChange} 
-                placeholder="correo@ejemplo.com"
-                disabled={saving}
-              />
+        {success && (
+            <div className={styles.successMessage}>
+              ¡Paciente actualizado exitosamente! Redirigiendo...
             </div>
-            <div className={styles.formGroup}>
-              <label>Especialidad *</label>
-              <select 
-                name="especialidad" 
-                value={lead.especialidad} 
-                onChange={handleChange}
-                disabled={saving}
-              >
-                <option value="Dermatología">Dermatología</option>
-                <option value="Cardiología">Cardiología</option>
-                <option value="Oftalmología">Oftalmología</option>
-                <option value="Odontología">Odontología</option>
-                <option value="Ginecología">Ginecología</option>
-                <option value="Neurología">Neurología</option>
-                <option value="Psicología">Psicología</option>
-                <option value="Ortopedia">Ortopedia</option>
-                <option value="Pediatría">Pediatría</option>
-                <option value="Traumatología">Traumatología</option>
-              </select>
+        )}
+
+        <div className={styles.formContainer}>
+          <section>
+            <h2 className={styles.sectionTitle}>Información del registro</h2>
+            <div className={`${styles.formGrid} ${styles.gridCols3}`}>
+              <div className={styles.formGroup}>
+                <label>Recepcionista</label>
+                <input type="text" value={lead.recepcionista} readOnly />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Clínica</label>
+                <input type="text" value={lead.clinica} readOnly />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Fecha de Registro</label>
+                <input type="text" value={lead.fechaRegistro || lead.ingreso} readOnly />
+              </div>
             </div>
-            <div className={styles.formGroup}>
-              <label>Costo *</label>
-              <input 
-                name="costo" 
-                value={lead.costo} 
-                onChange={handleChange} 
-                placeholder="S/. 0.00"
-                disabled={saving}
-              />
+            <div className={`${styles.formGrid} ${styles.gridCols3}`} style={{marginTop: '1rem'}}>
+              <div className={styles.formGroup}>
+                <label>Origen del Lead</label>
+                <input type="text" value={lead.origen || 'WEB'} readOnly />
+              </div>
             </div>
-          </div>
-        </section>
-        
-        <section>
-          <div className={styles.formGroup}>
-            <label>Observaciones</label>
-            <textarea 
-              rows={4} 
-              defaultValue="Paciente registrado en el sistema médico" 
-              placeholder="Ingrese observaciones adicionales..."
+          </section>
+
+          <section>
+            <h2 className={styles.sectionTitle}>Información del paciente</h2>
+            <div className={`${styles.formGrid} ${styles.gridCols3}`}>
+              {/* Fila 1 */}
+              <div className={styles.formGroup}>
+                <label>DNI *</label>
+                <input
+                    name="dni"
+                    value={lead.dni}
+                    onChange={handleChange}
+                    placeholder="Ingrese DNI"
+                    disabled={saving}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Cliente *</label>
+                <input
+                    name="cliente"
+                    value={lead.cliente}
+                    onChange={handleChange}
+                    placeholder="Nombre completo"
+                    disabled={saving}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Teléfono *</label>
+                <input
+                    name="telefono"
+                    value={lead.telefono}
+                    onChange={handleChange}
+                    placeholder="Número de teléfono"
+                    disabled={saving}
+                />
+              </div>
+
+              {/* Fila 2 */}
+              <div className={styles.formGroup}>
+                <label>Correo Electrónico *</label>
+                <input
+                    name="correo"
+                    value={lead.correo}
+                    onChange={handleChange}
+                    placeholder="correo@ejemplo.com"
+                    disabled={saving}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Especialidad *</label>
+                <select
+                    name="especialidad"
+                    value={lead.especialidad}
+                    onChange={handleChange}
+                    disabled={saving}
+                >
+                  <option value="Dermatología">Dermatología</option>
+                  <option value="Cardiología">Cardiología</option>
+                  <option value="Oftalmología">Oftalmología</option>
+                  <option value="Odontología">Odontología</option>
+                  <option value="Ginecología">Ginecología</option>
+                  <option value="Neurología">Neurología</option>
+                  <option value="Psicología">Psicología</option>
+                  <option value="Ortopedia">Ortopedia</option>
+                  <option value="Pediatría">Pediatría</option>
+                  <option value="Traumatología">Traumatología</option>
+                </select>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Costo *</label>
+                <input
+                    name="costo"
+                    value={lead.costo}
+                    onChange={handleChange}
+                    placeholder="S/. 0.00"
+                    disabled={saving}
+                />
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <div className={styles.formGroup}>
+              <label>Observaciones</label>
+              <textarea
+                  rows={4}
+                  defaultValue="Paciente registrado en el sistema médico"
+                  placeholder="Ingrese observaciones adicionales..."
+                  disabled={saving}
+              ></textarea>
+            </div>
+          </section>
+
+        </div>
+
+        <footer className={styles.pageFooter}>
+          <button
+              onClick={handleSave}
+              className={styles.saveButton}
               disabled={saving}
-            ></textarea>
-          </div>
-        </section>
-
+          >
+            <SaveIcon size={16} color="currentColor" />
+            {saving ? 'Guardando...' : 'Grabar'}
+          </button>
+          <button
+              onClick={() => navigate("/dashboard")}
+              className={styles.returnButton}
+              disabled={saving}
+          >
+            <ArrowLeftIcon size={16} color="currentColor" />
+            Retornar
+          </button>
+        </footer>
       </div>
-
-      <footer className={styles.pageFooter}>
-        <button 
-          onClick={handleSave} 
-          className={styles.saveButton}
-          disabled={saving}
-        >
-          <SaveIcon size={16} color="currentColor" />
-          {saving ? 'Guardando...' : 'Grabar'}
-        </button>
-        <button 
-          onClick={() => navigate("/dashboard")} 
-          className={styles.returnButton}
-          disabled={saving}
-        >
-          <ArrowLeftIcon size={16} color="currentColor" />
-          Retornar
-        </button>
-      </footer>
-    </div>
   );
 };
 
-export default LeadEditPage; 
+export default LeadEditPage;

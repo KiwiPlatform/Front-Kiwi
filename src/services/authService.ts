@@ -1,68 +1,153 @@
 import apiClient from './apiClient';
-import { isUsingMocks, devLog } from '../config/environment';
+import { apiLog } from '../config/environment';
 
-// const API_URL = 'http://your-api-url.com/api'; // This is now just a placeholder
+// Interfaces para el backend KiwiPay
+interface LoginRequest {
+  username: string;
+  password: string;
+}
 
-const login = async (username: string, password: string) => {
-  devLog('Attempting login with:', { username, password });
+interface LoginResponse {
+  token: string;
+  type: string;
+  username: string;
+  email: string;
+  role: string;
+  expiresIn: number;
+}
 
-  if (isUsingMocks()) {
-    // Mock login logic
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (username === 'miriam' && password === 'password') {
-          const mockUser = {
-            user: {
-              name: 'Miriam',
-              first_surname: 'Bautista',
-              email: 'moyola@autoplan.com.pe',
-            },
-            token: 'fake-jwt-token',
-          };
-          localStorage.setItem('user', JSON.stringify(mockUser));
-          devLog('Mock login successful');
-          resolve(mockUser);
-        } else {
-          devLog('Mock login failed: Invalid credentials');
-          reject(new Error('Invalid credentials'));
-        }
-      }, 1000); // 1-second delay to simulate network request
+// Interfaz adaptada para mantener compatibilidad con el frontend actual
+interface CompatibleUser {
+  user: {
+    name: string;
+    first_surname: string;
+    email: string;
+    role?: string;
+  };
+  token: string;
+}
+
+const login = async (username: string, password: string): Promise<CompatibleUser> => {
+  apiLog('REQUEST', 'Attempting login', { username, passwordProvided: !!password });
+
+  try {
+    // Llamada real al backend KiwiPay
+    const response = await apiClient.post<LoginResponse>('/auth/login', {
+      username,
+      password,
+    } as LoginRequest);
+
+    apiLog('SUCCESS', 'Login successful from KiwiPay backend', {
+      username: response.data.username,
+      email: response.data.email,
+      role: response.data.role,
+      tokenType: response.data.type,
+      expiresIn: response.data.expiresIn
     });
-  } else {
-    // Real API call
-    try {
-      const response = await apiClient.post('/auth/login', {
-        username,
-        password,
-      });
-      
-      if (response.data.token) {
-        localStorage.setItem('user', JSON.stringify(response.data));
-        devLog('Real API login successful');
-      }
-      return response.data;
-    } catch (error) {
-      devLog('Real API login failed:', error);
-      throw error;
-    }
+
+    // Adaptar la respuesta del backend al formato esperado por el frontend
+    const compatibleUser: CompatibleUser = {
+      user: {
+        name: response.data.username,
+        first_surname: '', // El backend KiwiPay no retorna apellido, usar vacío
+        email: response.data.email,
+        role: response.data.role,
+      },
+      token: response.data.token,
+    };
+
+    // Guardar datos del usuario en localStorage
+    localStorage.setItem('user', JSON.stringify(compatibleUser));
+    
+    apiLog('SUCCESS', 'User data stored in localStorage', {
+      userStored: !!localStorage.getItem('user')
+    });
+
+    return compatibleUser;
+    
+  } catch (error: any) {
+    apiLog('ERROR', 'Login failed', {
+      error: error.message,
+      status: error.response?.status,
+      data: error.response?.data
+    });
+    
+    // Re-lanzar el error para que sea manejado por el componente
+    throw error;
   }
 };
 
 const logout = () => {
+  apiLog('REQUEST', 'Logging out user', {
+    hadUser: !!localStorage.getItem('user')
+  });
+  
   localStorage.removeItem('user');
-  devLog('User logged out');
+  
+  apiLog('SUCCESS', 'User logged out successfully', {
+    userRemoved: !localStorage.getItem('user')
+  });
 };
 
-const getCurrentUser = () => {
+const getCurrentUser = (): CompatibleUser | null => {
   const userStr = localStorage.getItem('user');
-  if (userStr) return JSON.parse(userStr);
+  
+  if (userStr) {
+    try {
+      const user = JSON.parse(userStr);
+      apiLog('SUCCESS', 'Current user retrieved from localStorage', {
+        username: user.user?.name,
+        email: user.user?.email,
+        hasToken: !!user.token
+      });
+      return user;
+    } catch (error) {
+      apiLog('ERROR', 'Error parsing user data from localStorage', error);
+      localStorage.removeItem('user'); // Limpiar datos corruptos
+      return null;
+    }
+  }
+  
+  apiLog('REQUEST', 'No current user found in localStorage', {});
   return null;
+};
+
+const isAuthenticated = (): boolean => {
+  const user = getCurrentUser();
+  const isAuth = !!(user && user.token);
+  
+  apiLog('REQUEST', 'Checking authentication status', {
+    isAuthenticated: isAuth,
+    hasUser: !!user,
+    hasToken: !!(user?.token)
+  });
+  
+  return isAuth;
+};
+
+const getToken = (): string | null => {
+  const user = getCurrentUser();
+  const token = user?.token || null;
+  
+  apiLog('REQUEST', 'Getting authentication token', {
+    hasToken: !!token,
+    tokenLength: token ? token.length : 0
+  });
+  
+  return token;
 };
 
 const authService = {
   login,
   logout,
   getCurrentUser,
+  isAuthenticated,
+  getToken,
 };
+
+// Log de inicialización del servicio
+apiLog('SUCCESS', 'AuthService initialized for KiwiPay backend', {
+  methods: Object.keys(authService)
+});
 
 export default authService; 
