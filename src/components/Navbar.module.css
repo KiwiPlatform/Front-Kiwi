@@ -1,6 +1,6 @@
 .horizontalNavbar {
   width: 100vw;
-  background: #181a2f;
+  background: var(--primary-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,7 +13,6 @@
 
 .scrollContainer {
   flex: 1;
-  max-width: 140px;
   overflow-x: auto;
   overflow-y: visible;
   scrollbar-width: none;
@@ -108,6 +107,13 @@
   font-size: 0.8em;
   margin-left: 4px;
   transition: transform 0.2s;
+  display: inline-block;
+}
+.arrowDown.open {
+  transform: rotate(180deg);
+}
+.dropdownButton.active {
+  color: #fff !important;
 }
 
 .dropdownWrapper {
@@ -119,11 +125,11 @@
 
 .dropdownMenu {
   position: absolute;
-  top: 110%;
-  right: 0;
+  top: 50%;
+  right: 50%;
   left: auto;
   min-width: 200px;
-  background: #23213D;
+  background: var(--primary-dark);
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(14, 51, 57, 0.13);
   padding: 10px 0;
@@ -165,8 +171,8 @@
 }
 
 .dropdownItem:hover {
-  background: #383a50;
-  color: #38F2AB;
+  background: var(--shadow-medium);
+  color: var(--text-light);
 }
 
 @keyframes fadeIn {
@@ -183,28 +189,17 @@
   .horizontalNavbar { justify-content: center; }
   .scrollContainer { justify-content: center; }
 }
-@media (max-width: 425px) {
-  .horizontalNavbar { font-size: 13px; justify-content: center; }
-  .navList { gap: 8px; padding: 0 4px; }
-  .iconLabel { font-size: 0.95em; gap: 4px; }
-  .dropdownButton { font-size: 0.95em; padding: 4px 6px; }
-  .dropdownMenu { min-width: 110px; }
-  .scrollContainer { justify-content: center; max-width: 86px; }
-}
+
 @media (max-width: 375px) {
-  .horizontalNavbar { font-size: 12px; justify-content: center; }
-  .navList { gap: 4px; padding: 0 2px; }
-  .iconLabel { font-size: 0.9em; gap: 2px; }
+  .horizontalNavbar { font-size: 14px; justify-content: center; align-items: center;}
+  .iconLabel { font-size: 0.9em; gap: 5px; padding: 2px 4px;}
   .dropdownButton { font-size: 0.9em; padding: 2px 4px; }
-  .dropdownMenu { min-width: 90px; }
-  .scrollContainer { justify-content: center; max-width: 70px; font-size: 0.9em;}
+  .scrollContainer { justify-content: center}
 }
 @media (max-width: 320px) {
-  .horizontalNavbar { font-size: 11px; justify-content: center; }
-  .navList { gap: 2px; padding: 0 1px; }
-  .iconLabel { font-size: 10px; gap: 1px; }
-  .iconSvg {width: 15px; height: auto; padding-right: 2px;}
-  .dropdownButton { font-size: 10px; padding: 1px 2px; }
-  .dropdownMenu { min-width: 70px; }
+  .horizontalNavbar { font-size: 12px; justify-content: center; }
+  .navList{ gap: 4px; padding: 0 2em;}
+  .iconLabel { font-size: 12px; }
+  .dropdownButton { font-size: 12px; padding: 1px; }
   .scrollContainer { justify-content: center; }
 }
