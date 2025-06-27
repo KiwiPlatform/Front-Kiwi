@@ -1,16 +1,18 @@
+import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import styles from './DashboardPage.module.css'; // Reusing dashboard styles for consistency
+import TopBar from '../components/TopBar';
 
-const SeguridadPage = () => {
+const ProspectosPage = () => {
   return (
     <div className={styles.dashboardLayout}>
+      <TopBar/>
       <Navbar />
       <main className={styles.contentArea}>
-        <h1>Seguridad</h1>
-        <p>Aquí se mostrará el contenido de la sección de seguridad.</p>
+        <Outlet />
       </main>
     </div>
   );
 };
 
-export default SeguridadPage; 
+export default ProspectosPage; 

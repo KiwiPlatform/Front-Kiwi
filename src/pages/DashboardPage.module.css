@@ -1,37 +1,53 @@
-.dashboardLayout {
-  display: flex;
-  min-height: 100vh;
-  background: var(--background-light);
-}
 
-.contentArea {
-  margin-left: 280px;
-  padding: 32px;
-  width: calc(100vw - 280px);
-  box-sizing: border-box;
-  animation: fadeIn 0.5s ease-out;
+.dashboardLayout{
+    background-color: #ECEFF6;
 }
-
-.contentArea h1 {
-  font-size: 2.5rem;
-  color: var(--primary-dark);
-  margin-bottom: 24px;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.contentArea{
+    width: 90%;
+    height: 100vh;
+    margin: 2em auto;
+    padding: 1em;
 }
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .contentArea {
-    margin-left: 0;
-    width: 100vw;
-    padding: 20px;
-  }
-  
-  .contentArea h1 {
-    font-size: 2rem;
-  }
-} 
+.areaProfile{
+    width: 100%;
+    background-color: var(--white);
+    padding: 1.5em;
+    border-radius: 5px;
+}
+.bannerProfile{
+    width: 100%;
+    height: 200px;
+    background-color: var(--shadow-medium);
+    border-radius: 5px;
+}
+.contentProfile{
+ padding: 1em 0;
+ position: relative;
+}
+.svgProfile{
+ top: -60px;
+ position: absolute;
+ text-align: center;
+}
+.svgProfile p{
+    margin: 0;
+}
+.datosProfile{
+    display: flex;
+    justify-content: end;
+    gap: 1em;
+}
+.datosProfile span{
+    margin: 0.5em;
+    text-align: center;
+    padding-right: 2px;
+    border-right: 1px solid #ECEFF6;
+}
+.functionProfile{
+   background-color: #ECEFF6;
+   padding: 0.5em ;
+   border-radius: 3px;
+}
+.functionProfile span{
+    margin: 1em;
+}
