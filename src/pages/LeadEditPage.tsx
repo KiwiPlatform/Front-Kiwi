@@ -115,7 +115,7 @@ const LeadEditPage = () => {
       <div className={styles.editPageContainer}>
         <header className={styles.pageHeader}>
           <h1>Paciente: {lead.cliente}</h1>
-          <button onClick={() => navigate("/dashboard")} className={styles.returnButton}>
+          <button onClick={() => navigate("/leads/list")} className={styles.returnButton}>
             <ArrowLeftIcon size={16} color="currentColor" />
             Retornar
           </button>
@@ -263,7 +263,7 @@ const LeadEditPage = () => {
             {saving ? 'Guardando...' : 'Grabar'}
           </button>
           <button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/leads/list")}
               className={styles.returnButton}
               disabled={saving}
           >

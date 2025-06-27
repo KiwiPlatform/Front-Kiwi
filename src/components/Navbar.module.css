@@ -67,7 +67,9 @@
   font-weight: 500;
   white-space: nowrap;
 }
-
+.iconLabel:hover{
+  color: var(--white);
+}
 .active, .navList a.active, .dropdownButton.open {
   color: #fff !important;
 }

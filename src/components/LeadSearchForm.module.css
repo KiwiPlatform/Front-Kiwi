@@ -7,7 +7,9 @@
   margin-bottom: 24px;
   animation: fadeIn 0.5s ease-out;
 }
-
+.searchFormContainer{
+  margin-bottom: 24px;
+}
 .title {
   font-size: 1.8rem;
   color: var(--primary-dark);
@@ -219,6 +221,7 @@
     width: 100%;
     justify-content: center;
   }
+}
   @media (max-width: 425px) {
     .formGroup,
     .formGroup input[type="text"],
@@ -252,7 +255,12 @@
 .formGroup input[type="number"],
 .formGroup label,
 .formGroup select{
-      width: 250px;
+      width: 240px;
     }
-  }
-} 
+    .dateInputs{
+      gap: 8px;
+    }
+    .dateInputs input[type="date"]{
+      padding:2px;
+    }
+  } 
