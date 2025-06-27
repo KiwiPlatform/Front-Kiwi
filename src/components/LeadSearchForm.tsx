@@ -6,7 +6,7 @@ const LeadSearchForm = () => {
     <div className={styles.searchContainer}>
       <h2 className={styles.title}>Listado de pacientes - Búsqueda</h2>
       <form className={styles.formGrid}>
-        {/* Row 1 */}
+        {/* Fila 1 - 3 columnas */}
         <div className={styles.formGroup}>
           <label htmlFor="dni">DNI</label>
           <input type="text" id="dni" placeholder="Ingrese DNI" />
@@ -29,6 +29,8 @@ const LeadSearchForm = () => {
             <option value="Clinica Moderna">Clínica Moderna</option>
           </select>
         </div>
+
+        {/* Fila 2 - 3 columnas */}
         <div className={styles.formGroup}>
           <label htmlFor="especialidad">Especialidad</label>
           <select id="especialidad">
@@ -36,30 +38,11 @@ const LeadSearchForm = () => {
             <option value="Dermatología">Dermatología</option>
             <option value="Cardiología">Cardiología</option>
             <option value="Oftalmología">Oftalmología</option>
-            {/* Comentamos las especialidades que no existen en el backend
-            <option value="Odontología">Odontología</option>
-            <option value="Ginecología">Ginecología</option>
-            <option value="Neurología">Neurología</option>
-            <option value="Psicología">Psicología</option>
-            <option value="Ortopedia">Ortopedia</option>
-            <option value="Pediatría">Pediatría</option>
-            <option value="Traumatología">Traumatología</option>
-            */}
           </select>
         </div>
-
-        {/* Row 2 */}
         <div className={styles.formGroup}>
           <label htmlFor="telefono">Teléfono</label>
           <input type="text" id="telefono" placeholder="Número de teléfono" />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="costo_min">Costo Mínimo</label>
-          <input type="number" id="costo_min" placeholder="S/. 0" />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="costo_max">Costo Máximo</label>
-          <input type="number" id="costo_max" placeholder="S/. 10000" />
         </div>
         <div className={styles.formGroup}>
           <label htmlFor="ingreso">Año de Ingreso</label>
@@ -71,8 +54,43 @@ const LeadSearchForm = () => {
             <option value="2021">2021</option>
           </select>
         </div>
+
+        {/* Fila 3 - 3 columnas */}
+        <div className={styles.formGroup}>
+          <label htmlFor="recepcionista">Recepcionista</label>
+          <select id="recepcionista">
+            <option value="">Seleccione recepcionista</option>
+            <option value="Dermatología">Maria</option>
+            <option value="Cardiología">Pepito</option>
+            <option value="Oftalmología">Laura</option>
+          </select>
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="telefono">Teléfono fijo</label>
+          <input type="text" id="telefono" placeholder="Número de teléfono" />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="desembolsado">Estado</label>
+          <select id="desembolsado">
+            <option value="">Seleccione estado</option>
+            <option value="NUEVO">NUEVO</option>
+            <option value="CONTACTADO">CONTACTADO</option>
+            <option value="PRE_APROBADO">PRE_APROBADO</option>
+            <option value="APROBADO">APROBADO</option>
+            <option value="RECHAZADO">RECHAZADO</option>
+            <option value="DESEMBOLSADO">DESEMBOLSADO</option>
+          </select>
+        </div>
         
-        {/* Row 3 - Special Date Field */}
+        {/* Fila 4 - 2 columnas normales + 1 contenedor de fechas */}
+        <div className={styles.formGroup}>
+          <label htmlFor="costo_min">Costo Mínimo</label>
+          <input type="number" id="costo_min" placeholder="S/. 0" />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="costo_max">Costo Máximo</label>
+          <input type="number" id="costo_max" placeholder="S/. 10000" />
+        </div>
         <div className={`${styles.formGroup} ${styles.dateRangeGroup}`}>
           <div className={styles.radioGroup}>
             <label>
@@ -90,7 +108,6 @@ const LeadSearchForm = () => {
             <input type="date" />
           </div>
         </div>
-
       </form>
       <div className={styles.buttonContainer}>
           <button className={`${styles.button} ${styles.searchButton}`}>

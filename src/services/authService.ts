@@ -16,6 +16,14 @@ interface LoginResponse {
   expiresIn: number;
 }
 
+// Interfaz para errores de axios
+interface AxiosError {
+  response?: {
+    status?: number;
+    data?: unknown;
+  };
+}
+
 // Interfaz adaptada para mantener compatibilidad con el frontend actual
 interface CompatibleUser {
   user: {
@@ -25,6 +33,7 @@ interface CompatibleUser {
     role?: string;
   };
   token: string;
+  expiresAt?: number; // Timestamp de expiración
 }
 
 const login = async (username: string, password: string): Promise<CompatibleUser> => {
@@ -45,6 +54,9 @@ const login = async (username: string, password: string): Promise<CompatibleUser
       expiresIn: response.data.expiresIn
     });
 
+    // Calcular timestamp de expiración
+    const expiresAt = Date.now() + (response.data.expiresIn * 1000);
+
     // Adaptar la respuesta del backend al formato esperado por el frontend
     const compatibleUser: CompatibleUser = {
       user: {
@@ -54,22 +66,25 @@ const login = async (username: string, password: string): Promise<CompatibleUser
         role: response.data.role,
       },
       token: response.data.token,
+      expiresAt,
     };
 
     // Guardar datos del usuario en localStorage
     localStorage.setItem('user', JSON.stringify(compatibleUser));
     
     apiLog('SUCCESS', 'User data stored in localStorage', {
-      userStored: !!localStorage.getItem('user')
+      userStored: !!localStorage.getItem('user'),
+      expiresAt: new Date(expiresAt).toISOString()
     });
 
     return compatibleUser;
     
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError;
     apiLog('ERROR', 'Login failed', {
-      error: error.message,
-      status: error.response?.status,
-      data: error.response?.data
+      error: error instanceof Error ? error.message : String(error),
+      status: axiosError.response?.status,
+      data: axiosError.response?.data
     });
     
     // Re-lanzar el error para que sea manejado por el componente
@@ -95,10 +110,22 @@ const getCurrentUser = (): CompatibleUser | null => {
   if (userStr) {
     try {
       const user = JSON.parse(userStr);
+      
+      // Verificar si el token ha expirado
+      if (user.expiresAt && Date.now() > user.expiresAt) {
+        console.warn('Token expired, removing user data', {
+          expiredAt: new Date(user.expiresAt).toISOString(),
+          currentTime: new Date().toISOString()
+        });
+        localStorage.removeItem('user');
+        return null;
+      }
+      
       apiLog('SUCCESS', 'Current user retrieved from localStorage', {
         username: user.user?.name,
         email: user.user?.email,
-        hasToken: !!user.token
+        hasToken: !!user.token,
+        expiresAt: user.expiresAt ? new Date(user.expiresAt).toISOString() : 'No expiration'
       });
       return user;
     } catch (error) {
@@ -119,7 +146,8 @@ const isAuthenticated = (): boolean => {
   apiLog('REQUEST', 'Checking authentication status', {
     isAuthenticated: isAuth,
     hasUser: !!user,
-    hasToken: !!(user?.token)
+    hasToken: !!(user?.token),
+    tokenExpired: user?.expiresAt ? Date.now() > user.expiresAt : false
   });
   
   return isAuth;
@@ -137,12 +165,24 @@ const getToken = (): string | null => {
   return token;
 };
 
+// Función para verificar si el token está próximo a expirar (útil para renovación automática)
+const isTokenExpiringSoon = (minutesThreshold: number = 5): boolean => {
+  const user = getCurrentUser();
+  if (!user?.expiresAt) return false;
+  
+  const timeUntilExpiry = user.expiresAt - Date.now();
+  const minutesUntilExpiry = timeUntilExpiry / (1000 * 60);
+  
+  return minutesUntilExpiry <= minutesThreshold;
+};
+
 const authService = {
   login,
   logout,
   getCurrentUser,
   isAuthenticated,
   getToken,
+  isTokenExpiringSoon,
 };
 
 // Log de inicialización del servicio

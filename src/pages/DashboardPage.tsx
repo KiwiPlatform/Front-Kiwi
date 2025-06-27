@@ -1,13 +1,16 @@
-import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import styles from './DashboardPage.module.css';
+import TopBar from '../components/TopBar';
 
 const DashboardPage = () => {
+
+
   return (
-    <div className={styles.dashboardLayout}>
+    <div>
+      <TopBar/>
       <Navbar />
-      <main className={styles.contentArea}>
-        <Outlet />
+      <main >
+        <h1>Dashboard</h1>
+        <p style={{color: 'black'}}>Aquí se mostrará el contenido de la sección de dashboard.</p>
       </main>
     </div>
   );

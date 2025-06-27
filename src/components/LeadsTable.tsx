@@ -69,7 +69,7 @@ const LeadsTable = () => {
                     <tr key={lead.id}>
                       <td>
                         <button
-                            onClick={() => navigate(`/dashboard/edit/${lead.id}`)}
+                            onClick={() => navigate(`/leads/edit/${lead.id}`)}
                             className={styles.editButton}
                             title="Editar paciente"
                         >
