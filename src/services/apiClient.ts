@@ -1,6 +1,12 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
-import { getApiUrl, apiLog } from '../config/environment';
+import { getApiUrl, apiLog, isUsingMocks } from '../config/environment';
+
+// Check if we're in mock mode
+const mockModeEnabled = isUsingMocks();
+if (mockModeEnabled) {
+  console.log('🔍 API CLIENT: Creating axios instance with mock interceptors enabled');
+}
 
 // Crear instancia de axios con configuración base para KiwiPay Backend
 const apiClient: AxiosInstance = axios.create({

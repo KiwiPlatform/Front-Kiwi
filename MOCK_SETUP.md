@@ -2,7 +2,14 @@
 
 ## 📋 Resumen
 
-Este frontend está **completamente integrado** con el backend KiwiPay. Ya no utiliza mocks por defecto, sino que consume directamente los endpoints reales del backend en `http://localhost:8080/api/v1`.
+Este frontend está **completamente integrado** con el backend KiwiPay pero también admite un modo de mocks. Puede consumir directamente los endpoints reales del backend en `http://localhost:8080/api/v1` o trabajar completamente sin backend mediante el sistema de mocks.
+
+### 🔍 Sistemas de Mocks Disponibles
+
+El proyecto implementa dos enfoques complementarios para el modo mock:
+
+1. **Interceptores Axios**: Interceptan las llamadas HTTP en el nivel de Axios
+2. **Mocks directos de servicios**: Reemplazan completamente los servicios por implementaciones mock
 
 ## 🚀 Configuración Rápida
 
@@ -19,10 +26,22 @@ cp env.example .env
 ```env
 # Backend KiwiPay
 VITE_API_URL=http://localhost:8080/api/v1
-VITE_USE_MOCKS=false
+VITE_USE_MOCKS=false  # Cambiar a true para activar el modo mock
 VITE_APP_NAME=KiwiPay Loan Management
 VITE_APP_VERSION=1.0.0
 VITE_DEBUG=true
+```
+
+### 3. Alternancia entre modo Mock y Backend real
+
+Para trabajar con mocks (sin necesidad de backend):
+```env
+VITE_USE_MOCKS=true
+```
+
+Para trabajar con el backend real:
+```env
+VITE_USE_MOCKS=false
 ```
 
 ## 🔌 Endpoints Implementados
@@ -67,11 +86,18 @@ interface BackendLead {
 ```
 src/
 ├── config/
-│   └── environment.ts          # Configuración KiwiPay + logs mejorados
+│   └── environment.ts          # Configuración KiwiPay + logs mejorados + control de mocks
+├── mocks/                      # Sistema de mocks completo
+│   ├── MockData.ts             # Datos mock para usuarios y leads (con persistencia)
+│   ├── MockHandlers.ts         # Manejadores de endpoints mock
+│   ├── MockService.ts          # Servicio de interceptores Axios para mocks
+│   ├── AuthServiceMock.ts      # Implementación mock directa del servicio de auth
+│   ├── LeadServiceMock.ts      # Implementación mock directa del servicio de leads
+│   └── README.md               # Documentación del sistema de mocks
 ├── services/
 │   ├── apiClient.ts           # Cliente HTTP con interceptores KiwiPay
-│   ├── authService.ts         # Servicio auth adaptado a KiwiPay
-│   ├── leadService.ts         # Servicio leads adaptado a KiwiPay
+│   ├── authService.ts         # Servicio auth adaptado a KiwiPay (con soporte de mocks)
+│   ├── leadService.ts         # Servicio leads adaptado a KiwiPay (con soporte de mocks)
 │   └── testEndpoints.ts       # Testing completo de endpoints
 └── types/
     └── Lead.ts               # Tipos TypeScript (sin cambios)
@@ -243,10 +269,30 @@ El frontend maneja automáticamente los errores en formato RFC 7807 del backend:
 **✅ IMPLEMENTACIÓN COMPLETA**
 - ✅ Todos los endpoints compatibles funcionando
 - ✅ Adaptadores de datos implementados
+- ✅ Sistema de mocks completo y robusto
+- ✅ Modos de trabajo dual (con y sin backend)
+- ✅ Persistencia de datos mock (localStorage)
 - ✅ Logs detallados funcionando
 - ✅ Testing automático implementado
 - ✅ Manejo de errores RFC 7807
 - ✅ Autenticación JWT integrada
 - ✅ Compatibilidad total con componentes existentes
 
-**El frontend está listo para usar con tu backend KiwiPay.** 
+**El frontend está listo para usar con o sin tu backend KiwiPay.**
+
+## 💡 Sistema de mocks avanzado
+
+El proyecto implementa dos capas de mocking para garantizar un funcionamiento robusto incluso sin backend:
+
+### 1️⃣ Interceptores Axios (primera capa)
+- Captura todas las peticiones HTTP que pasan por `apiClient`
+- Implementación basada en los endpoints reales del backend
+- Configurable a través de MockHandlers.ts
+
+### 2️⃣ Mocks directos de servicios (segunda capa, más robusta)
+- Reemplaza completamente las implementaciones de servicios
+- No depende de Axios ni interceptores HTTP
+- Importación dinámica para evitar ciclos de dependencia
+- Implementado para `authService` y `leadService`
+
+Este enfoque dual garantiza que la aplicación funcione perfectamente en modo mock, independientemente de cómo se realicen las llamadas API. 

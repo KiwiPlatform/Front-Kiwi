@@ -17,7 +17,18 @@ export const config = {
 } as const;
 
 // Helper para verificar si estamos usando mocks
-export const isUsingMocks = () => config.USE_MOCKS;
+export const isUsingMocks = () => {
+  const usingMocks = config.USE_MOCKS;
+  
+  // Log environment variables for debugging
+  console.log('🔍 MOCK CONFIG CHECK:', {
+    VITE_USE_MOCKS: import.meta.env.VITE_USE_MOCKS,
+    USE_MOCKS: usingMocks,
+    parseResult: import.meta.env.VITE_USE_MOCKS === 'true'
+  });
+  
+  return usingMocks;
+};
 
 // Helper para obtener la URL base de la API
 export const getApiUrl = (endpoint: string = '') => {

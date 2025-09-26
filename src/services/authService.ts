@@ -1,5 +1,15 @@
 import apiClient from './apiClient';
-import { apiLog } from '../config/environment';
+import { apiLog, isUsingMocks } from '../config/environment';
+
+// Import mock implementation when mocks are enabled
+let authServiceMock: any = null;
+if (isUsingMocks()) {
+  // Dynamic import to avoid dependency cycles and allow proper initialization order
+  import('../mocks/AuthServiceMock').then(module => {
+    authServiceMock = module.authServiceMock;
+    console.log('🔶 Auth Service: Mock implementation loaded and ready');
+  });
+}
 
 // Interfaces para el backend KiwiPay
 interface LoginRequest {
@@ -39,6 +49,26 @@ interface CompatibleUser {
 const login = async (username: string, password: string): Promise<CompatibleUser> => {
   apiLog('REQUEST', 'Attempting login', { username, passwordProvided: !!password });
 
+  // Use mock implementation when mocks are enabled
+  if (isUsingMocks()) {
+    try {
+      // Dynamically import and use the mock implementation if not already loaded
+      if (!authServiceMock) {
+        const module = await import('../mocks/AuthServiceMock');
+        authServiceMock = module.authServiceMock;
+      }
+      
+      // Call mock implementation
+      return await authServiceMock.login(username, password);
+    } catch (error: unknown) {
+      apiLog('ERROR', 'Mock login failed', {
+        error: error instanceof Error ? error.message : String(error)
+      });
+      throw error;
+    }
+  }
+
+  // Real implementation for when mocks are disabled
   try {
     // Llamada real al backend KiwiPay
     const response = await apiClient.post<LoginResponse>('/auth/login', {
@@ -93,6 +123,12 @@ const login = async (username: string, password: string): Promise<CompatibleUser
 };
 
 const logout = () => {
+  // Use mock implementation when mocks are enabled
+  if (isUsingMocks() && authServiceMock) {
+    return authServiceMock.logout();
+  }
+
+  // Real implementation
   apiLog('REQUEST', 'Logging out user', {
     hadUser: !!localStorage.getItem('user')
   });
@@ -105,6 +141,12 @@ const logout = () => {
 };
 
 const getCurrentUser = (): CompatibleUser | null => {
+  // Use mock implementation when mocks are enabled
+  if (isUsingMocks() && authServiceMock) {
+    return authServiceMock.getCurrentUser();
+  }
+
+  // Real implementation
   const userStr = localStorage.getItem('user');
   
   if (userStr) {
@@ -140,6 +182,12 @@ const getCurrentUser = (): CompatibleUser | null => {
 };
 
 const isAuthenticated = (): boolean => {
+  // Use mock implementation when mocks are enabled
+  if (isUsingMocks() && authServiceMock) {
+    return authServiceMock.isAuthenticated();
+  }
+
+  // Real implementation
   const user = getCurrentUser();
   const isAuth = !!(user && user.token);
   
@@ -154,6 +202,12 @@ const isAuthenticated = (): boolean => {
 };
 
 const getToken = (): string | null => {
+  // Use mock implementation when mocks are enabled
+  if (isUsingMocks() && authServiceMock) {
+    return authServiceMock.getToken();
+  }
+
+  // Real implementation
   const user = getCurrentUser();
   const token = user?.token || null;
   
@@ -167,6 +221,12 @@ const getToken = (): string | null => {
 
 // Función para verificar si el token está próximo a expirar (útil para renovación automática)
 const isTokenExpiringSoon = (minutesThreshold: number = 5): boolean => {
+  // Use mock implementation when mocks are enabled
+  if (isUsingMocks() && authServiceMock) {
+    return authServiceMock.isTokenExpiringSoon(minutesThreshold);
+  }
+
+  // Real implementation
   const user = getCurrentUser();
   if (!user?.expiresAt) return false;
   

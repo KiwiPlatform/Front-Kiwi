@@ -1,8 +1,28 @@
 import apiClient from './apiClient';
 import type { Lead } from '../types/Lead';
-import { apiLog } from '../config/environment';
+import { apiLog, isUsingMocks } from '../config/environment';
 import { LeadStatus } from '../types/Lead';
 import { getSpecialtyName, getSpecialtyId } from '../config/specialties';
+
+// Import mock implementation when mocks are enabled
+let leadServiceMock: any = null;
+if (isUsingMocks()) {
+  // Dynamic import to avoid dependency cycles and allow proper initialization order
+  import('../mocks/LeadServiceMock').then(module => {
+    leadServiceMock = module.leadServiceMock;
+    console.log('🔶 Lead Service: Mock implementation loaded and ready');
+  });
+}
+
+// Add a debug function to log when we're using the mock implementation
+const useMockImplementation = (functionName: string) => {
+  if (isUsingMocks()) {
+    console.log(`🔹 ${functionName}: Using MOCK implementation`);
+    return true;
+  }
+  console.log(`🔸 ${functionName}: Using REAL implementation`);
+  return false;
+}
 
 // Interfaces del backend KiwiPay
 interface BackendLead {
@@ -204,6 +224,26 @@ const adaptFrontendToBackend = (frontendLead: Partial<import('../types/Lead').Le
 export const getLeads = async (): Promise<Lead[]> => {
   apiLog('REQUEST', 'Fetching all leads from KiwiPay backend', {});
 
+  // Use mock implementation when mocks are enabled
+  if (useMockImplementation('getLeads')) {
+    try {
+      // Dynamically import and use mock if not already loaded
+      if (!leadServiceMock) {
+        const module = await import('../mocks/LeadServiceMock');
+        leadServiceMock = module.leadServiceMock;
+      }
+      
+      // Call mock implementation
+      return await leadServiceMock.getLeads();
+    } catch (error: unknown) {
+      apiLog('ERROR', 'Mock getLeads failed', {
+        error: error instanceof Error ? error.message : String(error)
+      });
+      throw error;
+    }
+  }
+
+  // Real implementation
   try {
     const response = await apiClient.get<BackendLead[]>('/leads/all');
 
@@ -236,6 +276,26 @@ export const getLeads = async (): Promise<Lead[]> => {
 export const getLeadById = async (id: number): Promise<Lead | undefined> => {
   apiLog('REQUEST', 'Fetching lead by ID from KiwiPay backend', { id });
 
+  // Use mock implementation when mocks are enabled
+  if (useMockImplementation('getLeadById')) {
+    try {
+      // Dynamically import and use mock if not already loaded
+      if (!leadServiceMock) {
+        const module = await import('../mocks/LeadServiceMock');
+        leadServiceMock = module.leadServiceMock;
+      }
+      
+      // Call mock implementation
+      return await leadServiceMock.getLeadById(id);
+    } catch (error: unknown) {
+      apiLog('ERROR', 'Mock getLeadById failed', {
+        error: error instanceof Error ? error.message : String(error)
+      });
+      throw error;
+    }
+  }
+
+  // Real implementation
   try {
     const response = await apiClient.get<BackendLead>(`/leads/${id}`);
 
@@ -278,6 +338,26 @@ export const createLead = async (lead: Omit<Lead, 'id'>): Promise<Lead> => {
     dni: lead.dni
   });
 
+  // Use mock implementation when mocks are enabled
+  if (useMockImplementation('createLead')) {
+    try {
+      // Dynamically import and use mock if not already loaded
+      if (!leadServiceMock) {
+        const module = await import('../mocks/LeadServiceMock');
+        leadServiceMock = module.leadServiceMock;
+      }
+      
+      // Call mock implementation
+      return await leadServiceMock.createLead(lead);
+    } catch (error: unknown) {
+      apiLog('ERROR', 'Mock createLead failed', {
+        error: error instanceof Error ? error.message : String(error)
+      });
+      throw error;
+    }
+  }
+
+  // Real implementation
   try {
     // Adaptar los datos del frontend al formato del backend
     const backendData = adaptFrontendToBackend(lead) as CreateLeadRequest;
@@ -335,6 +415,26 @@ export const updateLead = async (id: number, lead: Partial<Lead>): Promise<Lead>
     changes: Object.keys(lead)
   });
 
+  // Use mock implementation when mocks are enabled
+  if (useMockImplementation('updateLead')) {
+    try {
+      // Dynamically import and use mock if not already loaded
+      if (!leadServiceMock) {
+        const module = await import('../mocks/LeadServiceMock');
+        leadServiceMock = module.leadServiceMock;
+      }
+      
+      // Call mock implementation
+      return await leadServiceMock.updateLead(id, lead);
+    } catch (error: unknown) {
+      apiLog('ERROR', 'Mock updateLead failed', {
+        error: error instanceof Error ? error.message : String(error)
+      });
+      throw error;
+    }
+  }
+
+  // Real implementation
   try {
     // Adaptar los datos del frontend al formato del backend
     const backendData = adaptFrontendToBackend(lead) as UpdateLeadRequest;
@@ -411,6 +511,27 @@ export const updateLead = async (id: number, lead: Partial<Lead>): Promise<Lead>
 export const deleteLead = async (id: number): Promise<void> => {
   apiLog('REQUEST', 'Deleting lead from KiwiPay backend', { id });
 
+  // Use mock implementation when mocks are enabled
+  if (useMockImplementation('deleteLead')) {
+    try {
+      // Dynamically import and use mock if not already loaded
+      if (!leadServiceMock) {
+        const module = await import('../mocks/LeadServiceMock');
+        leadServiceMock = module.leadServiceMock;
+      }
+      
+      // Call mock implementation
+      await leadServiceMock.deleteLead(id);
+      return;
+    } catch (error: unknown) {
+      apiLog('ERROR', 'Mock deleteLead failed', {
+        error: error instanceof Error ? error.message : String(error)
+      });
+      throw error;
+    }
+  }
+
+  // Real implementation
   try {
     await apiClient.delete(`/leads/${id}`);
 
