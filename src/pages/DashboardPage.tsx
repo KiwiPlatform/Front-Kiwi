@@ -1,5 +1,5 @@
-import Navbar from '../components/Navbar';
-import TopBar from '../components/TopBar';
+import Navbar from '../components/navbar/Navbar';
+import TopBar from '../components/navbar/TopBar';
 import styles from './DashboardPage.module.css'
 import { UserSvgIcon } from '../components/Icons';
 

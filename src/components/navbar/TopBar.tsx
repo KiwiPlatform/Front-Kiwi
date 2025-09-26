@@ -1,5 +1,5 @@
-import { KiwiIconLanding, UserSvgIcon, LogoutIcon } from '../components/Icons';
-import authService from '../services/authService';
+import { KiwiIconLanding, UserSvgIcon, LogoutIcon } from '../Icons';
+import authService from '../../services/authService';
 import styles from './TopBar.module.css'
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';

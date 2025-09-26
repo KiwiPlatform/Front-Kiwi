@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import styles from './LeadSearchForm.module.css';
+import styles from './prospectosComponent.module.css';
+import { SearchIcon } from '../Icons';
+
 
 const ProspectosSearchForm = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -62,10 +64,12 @@ const ProspectosSearchForm = () => {
             </select>
           </div>
           
-          <div className={styles.formGroup}>
-            <button type="submit" className={styles.searchButton}>
-              Buscar
-            </button>
+          <div className={styles.buttonContainer}>
+           
+            <button className={`${styles.button} ${styles.searchButton}`}>
+            <SearchIcon size={16} color="currentColor" />
+            Búsqueda
+          </button>
           </div>
         </div>
       </form>

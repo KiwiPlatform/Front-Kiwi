@@ -1,7 +1,7 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import styles from "./Navbar.module.css";
-import { DashboardIcon, NavbarGeneralIcon } from "./Icons"; // Usa tus íconos aquí
+import { DashboardIcon, NavbarGeneralIcon } from "../Icons"; // Usa tus íconos aquí
 import ReactDOM from "react-dom";
 
 // Nuevo componente para el portal del dropdown

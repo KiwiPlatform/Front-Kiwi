@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from './LeadsTable.module.css';
-import { EditIcon } from './Icons';
+import styles from './prospectosComponent.module.css';
+import { EditIcon } from '../Icons';
 
 // Interfaz para Prospecto (similar a Lead pero adaptada)
 interface Prospecto {

@@ -1,5 +1,5 @@
-import ProspectosSearchForm from './ProspectosSearchForm';
-import ProspectosTable from './ProspectosTable';
+import ProspectosSearchForm from '../prospectos/ProspectosSearchForm';
+import ProspectosTable from '../prospectos/ProspectosTable';
 
 const ProspectosListPage = () => {
   return (

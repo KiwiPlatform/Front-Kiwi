@@ -1,5 +1,5 @@
 import styles from './LeadSearchForm.module.css';
-import { SearchIcon, ExportIcon } from './Icons';
+import { SearchIcon, ExportIcon } from '../Icons';
 
 const LeadSearchForm = () => {
   return (
@@ -8,8 +8,8 @@ const LeadSearchForm = () => {
       <form className={styles.formGrid}>
         {/* Fila 1 - 3 columnas */}
         <div className={styles.formGroup}>
-          <label htmlFor="dni">DNI</label>
-          <input type="text" id="dni" placeholder="Ingrese DNI" />
+          <label htmlFor="dni">N° Documento</label>
+          <input type="text" id="dni" placeholder="Ingrese n° documento" />
         </div>
         <div className={styles.formGroup}>
           <label htmlFor="cliente">Cliente</label>
@@ -31,15 +31,19 @@ const LeadSearchForm = () => {
         </div>
 
         {/* Fila 2 - 3 columnas */}
-        <div className={styles.formGroup}>
-          <label htmlFor="especialidad">Especialidad</label>
-          <select id="especialidad">
-            <option value="">Seleccione especialidad</option>
-            <option value="Dermatología">Dermatología</option>
-            <option value="Cardiología">Cardiología</option>
-            <option value="Oftalmología">Oftalmología</option>
+         <div className={styles.formGroup}>
+          <label htmlFor="desembolsado">Estado</label>
+          <select id="desembolsado">
+            <option value="">Seleccione estado</option>
+            <option value="NUEVO">NUEVO</option>
+            <option value="CONTACTADO">CONTACTADO</option>
+            <option value="PRE_APROBADO">PRE_APROBADO</option>
+            <option value="APROBADO">APROBADO</option>
+            <option value="RECHAZADO">RECHAZADO</option>
+            <option value="DESEMBOLSADO">DESEMBOLSADO</option>
           </select>
         </div>
+        
         <div className={styles.formGroup}>
           <label htmlFor="telefono">Teléfono</label>
           <input type="text" id="telefono" placeholder="Número de teléfono" />
@@ -57,40 +61,55 @@ const LeadSearchForm = () => {
 
         {/* Fila 3 - 3 columnas */}
         <div className={styles.formGroup}>
-          <label htmlFor="recepcionista">Recepcionista</label>
+          <label htmlFor="sede">Sede</label>
+          <select id="sede">
+            <option value="">Seleccione sede</option>
+            <option value="Lima">Lima</option>
+            <option value="Arequipa">Arequipa</option>
+            <option value="Cusco">Cusco</option>
+          </select>
+        </div>
+        
+        <div className={styles.formGroup}>
+          <label htmlFor="sub_estado">Sub Estado</label>
+          <select id="sub_estado">
+            <option value="">Seleccione sub estado</option>
+            <option value="Lima">Lima</option>
+            <option value="Arequipa">Arequipa</option>
+            <option value="Cusco">Cusco</option>
+          </select>
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="especialidad">Ciudad</label>
+          <select id="especialidad">
+            <option value="">Seleccione ciudad</option>
+            <option value="Lima">Lima</option>
+            <option value="Arequipa">Arequipa</option>
+            <option value="Cusco">Cusco</option>
+          </select>
+        </div>
+        
+        {/* Fila 4 - 2 columnas normales + 1 contenedor de fechas */}
+       <div className={styles.formGroup}>
+          <label htmlFor="recepcionista">Ejecutivo Comercial</label>
           <select id="recepcionista">
-            <option value="">Seleccione recepcionista</option>
+            <option value="">Seleccione asesor</option>
             <option value="Dermatología">Maria</option>
             <option value="Cardiología">Pepito</option>
             <option value="Oftalmología">Laura</option>
           </select>
         </div>
+
         <div className={styles.formGroup}>
-          <label htmlFor="telefono">Teléfono fijo</label>
-          <input type="text" id="telefono" placeholder="Número de teléfono" />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="desembolsado">Estado</label>
-          <select id="desembolsado">
-            <option value="">Seleccione estado</option>
-            <option value="NUEVO">NUEVO</option>
-            <option value="CONTACTADO">CONTACTADO</option>
-            <option value="PRE_APROBADO">PRE_APROBADO</option>
-            <option value="APROBADO">APROBADO</option>
-            <option value="RECHAZADO">RECHAZADO</option>
-            <option value="DESEMBOLSADO">DESEMBOLSADO</option>
+          <label htmlFor="origen">Origen</label>
+          <select id="origen">
+            <option value="">Seleccione origen</option>
+            <option value="Paid media">Paid media</option>
+            <option value="Colaboradores">Colaboradores</option>
+            <option value="Bases clinicas">Bases clinicas</option>
           </select>
         </div>
-        
-        {/* Fila 4 - 2 columnas normales + 1 contenedor de fechas */}
-        <div className={styles.formGroup}>
-          <label htmlFor="costo_min">Costo Mínimo</label>
-          <input type="number" id="costo_min" placeholder="S/. 0" />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="costo_max">Costo Máximo</label>
-          <input type="number" id="costo_max" placeholder="S/. 10000" />
-        </div>
+
         <div className={`${styles.formGroup} ${styles.dateRangeGroup}`}>
           <div className={styles.radioGroup}>
             <label>

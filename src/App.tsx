@@ -5,8 +5,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LeadsPage from './pages/LeadsPage';
 import ProspectosPage from './pages/ProspectosPage';
 import LeadEditPage from './pages/LeadEditPage';
-import LeadsListPage from './components/LeadsListPage';
-import ProspectosListPage from './components/ProspectosListPage';
+import LeadsListPage from './components/leads/LeadsListPage';
+import ProspectosListPage from './components/prospectos/ProspectosListPage';
 import { LeadsProvider } from './context/LeadsContext';
 import ExtraPage from './pages/ExtraPage';
 

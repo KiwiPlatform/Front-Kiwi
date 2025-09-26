@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LeadsTable.module.css';
-import { getLeads } from '../services/leadService';
-import type { Lead } from '../types/Lead';
-import { EditIcon } from './Icons';
-import { useLeadsContext } from '../context/LeadsContext';
-import { LeadStatusLabels, LeadStatus } from '../types/Lead';
+import { getLeads } from '../../services/leadService';
+import type { Lead } from '../../types/Lead';
+import { EditIcon } from '../Icons';
+import { useLeadsContext } from '../../context/LeadsContext';
+import { LeadStatusLabels, LeadStatus } from '../../types/Lead';
 
 const LeadsTable = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -51,13 +51,15 @@ const LeadsTable = () => {
             <thead>
             <tr>
               <th>Editar</th>
+              <th>Fecha registro</th>
               <th>Cliente</th>
               <th>Clínica</th>
-              <th>DNI</th>
+              <th>N° Documento</th>
               <th>Especialidad</th>
               <th>Teléfono</th>
               <th>Costo</th>
-              <th>Ingreso</th>
+              <th>Ingresos</th>
+
               <th>Status</th>
             </tr>
             </thead>
@@ -76,6 +78,7 @@ const LeadsTable = () => {
                           <EditIcon size={16} color="currentColor" />
                         </button>
                       </td>
+                      <td>{lead.fechaRegistro}</td>
                       <td>{lead.cliente}</td>
                       <td>{lead.clinica}</td>
                       <td>{lead.dni}</td>

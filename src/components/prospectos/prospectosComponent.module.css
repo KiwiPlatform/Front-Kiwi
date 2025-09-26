@@ -1,0 +1,513 @@
+.searchContainer {
+  background: var(--white);
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px var(--shadow-light);
+  border: 1px solid var(--border-light);
+  margin-bottom: 24px;
+  animation: fadeIn 0.5s ease-out;
+}
+.searchFormContainer{
+  margin-bottom: 24px;
+}
+.title {
+  font-size: 1.8rem;
+  color: var(--primary-dark);
+  margin-bottom: 24px;
+  border-bottom: 3px solid var(--accent-green);
+  padding-bottom: 16px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  align-items: end;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.formGroup label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="date"],
+.formGroup input[type="email"],
+.formGroup input[type="number"],
+.formGroup select {
+  width: 100%;
+  padding: 5px 10px;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 14px;
+  background: var(--white);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.formGroup input:focus,
+.formGroup select:focus {
+  outline: none;
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 3px rgba(56, 242, 171, 0.1);
+  transform: translateY(-2px);
+}
+
+.dateRangeGroup {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, rgba(22, 65, 48, 0.05), rgba(100, 143, 44, 0.05));
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid var(--border-light);
+  min-height: 100px;
+  justify-content: space-between;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.radioGroup label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: var(--white);
+  border: 2px solid var(--border-light);
+  font-size: 14px;
+  margin-bottom: 0;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.radioGroup label:hover {
+  border-color: var(--primary-dark);
+  background: rgba(56, 242, 171, 0.05);
+}
+
+.radioGroup input[type="radio"] {
+  accent-color: var(--accent-green);
+  transform: scale(1.1);
+}
+
+.dateInputs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  justify-content:center;
+}
+
+.dateInputs input[type="date"] {
+  min-width: 100px;
+  max-width: 140px;
+  flex: 1;
+  padding: 5px 12px;
+  font-size: 14px;
+}
+
+.dateInputs span {
+  margin: 0 4px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid var(--border-light);
+}
+
+.button {
+  max-width: 500px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 12px;
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.searchButton {
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-yellow));
+  color: var(--primary-dark);
+}
+
+.searchButton:hover {
+  box-shadow: 0 8px 25px rgba(56, 242, 171, 0.4);
+}
+
+.exportButton {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium));
+  color: var(--white);
+}
+
+.exportButton:hover {
+  box-shadow: 0 8px 25px rgba(14, 51, 57, 0.4);
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .formGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .dateRangeGroup {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .searchContainer {
+    padding: 20px;
+  }
+  
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .dateRangeGroup {
+    grid-column: span 1;
+  }
+  
+  .buttonContainer {
+    flex-direction: column;
+  }
+  
+  .button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+  @media (max-width: 425px) {
+    .formGroup,
+    .formGroup input[type="text"],
+.formGroup input[type="date"],
+.formGroup input[type="email"],
+.formGroup input[type="number"],
+.formGroup label,
+.formGroup select{
+      width: 350px;
+    }
+  
+  }
+  @media (max-width: 375px) {
+    .formGroup,
+    .formGrid,
+    .formGroup input[type="text"],
+.formGroup input[type="date"],
+.formGroup input[type="email"],
+.formGroup input[type="number"],
+.formGroup label,
+.formGroup select{
+      width: 300px;
+    }
+  }
+  @media (max-width: 320px) {
+    .formGroup,
+    .formGrid,
+    .formGroup input[type="text"],
+.formGroup input[type="date"],
+.formGroup input[type="email"],
+.formGroup input[type="number"],
+.formGroup label,
+.formGroup select{
+      width: 240px;
+    }
+    .dateInputs{
+      gap: 8px;
+    }
+    .dateInputs input[type="date"]{
+      padding:2px;
+    }
+  } 
+
+  /** stylos  prospectostable**/
+
+  .tableContainer {
+  background: var(--white);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px var(--shadow-light);
+  border: 1px solid var(--border-light);
+  animation: fadeIn 0.6s ease-out;
+}
+
+.workflowContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.workflowBadges {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.workflowBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+}
+
+.workflowBadge:nth-child(1) { background-color: #007bff; }
+.workflowBadge:nth-child(2) { background-color: #ffc107; color: #333; }
+.workflowBadge:nth-child(3) { background-color: #28a745; }
+.workflowBadge:nth-child(4) { background-color: #17a2b8; }
+.workflowBadge:nth-child(5) { background-color: #6c757d; }
+.workflowBadge:nth-child(6) { background-color: #343a40; }
+.workflowBadge:nth-child(7) { background-color: #0069d9; }
+.workflowBadge:nth-child(8) { background-color: #dc3545; }
+
+
+.badgeNumber {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 8px;
+  font-size: 0.7rem;
+}
+
+.tableControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.showEntries, .searchTable {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.showEntries select, .searchTable input {
+  padding: 10px 16px;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.showEntries select:focus, .searchTable input:focus {
+  outline: none;
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 3px rgba(56, 242, 171, 0.1);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+}
+
+th, td {
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-light);
+  text-align: center;
+  font-size: 14px;
+}
+
+thead tr {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium));
+  color: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+th {
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 20px;
+}
+
+tbody tr {
+  transition: all 0.3s ease;
+}
+
+tbody tr:nth-of-type(even) {
+  background-color: rgba(56, 242, 171, 0.05);
+}
+
+tbody tr:hover {
+  background: linear-gradient(135deg, rgba(56, 242, 171, 0.1), rgba(167, 251, 57, 0.1));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-light);
+}
+
+.editButton {
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-yellow));
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+  color: var(--primary-dark);
+  font-weight: bold;
+}
+
+.editButton:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(56, 242, 171, 0.4);
+}
+
+/* Status badges */
+.statusBadge {
+  width: auto;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.statusActive {
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-yellow));
+  color: var(--primary-dark);
+}
+
+.statusPending {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: var(--primary-dark);
+}
+
+.statusInactive {
+  background: linear-gradient(135deg, var(--primary-medium), #8a9a9d);
+  color: var(--white);
+}
+
+.statusNuevo {
+  background: linear-gradient(135deg, #bdbdbd, #e0e0e0);
+  color: #333;
+}
+.statusContactado {
+  background: linear-gradient(135deg, #2196f3, #64b5f6);
+  color: #fff;
+}
+.statusEvaluacion {
+  background: linear-gradient(135deg, #ff9800, #ffc107);
+  color: #fff;
+}
+.statusPreaprobado {
+  background: linear-gradient(135deg, #00bcd4, #4dd0e1);
+  color: #fff;
+}
+.statusAprobado {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: #fff;
+}
+.statusRechazado {
+  background: linear-gradient(135deg, #f44336, #e57373);
+  color: #fff;
+}
+.statusDesembolsado {
+  background: linear-gradient(135deg, #8bc34a, #cddc39);
+  color: #333;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .showEntries, .searchTable {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 768px) {
+  .tableContainer {
+    padding: 16px;
+  }
+  
+  th, td {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+  
+  .editButton {
+    font-size: 1rem;
+    padding: 6px 8px;
+  }
+}
+@media (max-width: 425px) {
+  .tableControls{
+    justify-content: start;
+  }
+}
+@media (max-width: 320px) {
+  .searchTable input{
+    width: 180px;
+  }
+}
